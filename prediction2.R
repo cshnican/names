@@ -1,0 +1,259 @@
+library(tidyverse)
+library("ggmap")
+library(maptools)
+library(maps)
+library(lme4)
+require(gridExtra)
+library(xtable)
+library(lmerTest)
+library(brms)
+library(ggpubr)
+
+# to run this part, we need data from the original Finnish source
+
+# d = read_csv("finnish_data/births.csv")
+# 
+# # Use Convert Lats Lons.ipynb to get the good lat lon
+# # convert using the genealogy repo from github.com/ekQ/genealogy.git
+# parishes = read_csv("finnish_data/parish_with_lat_lon.csv") %>%
+#   select(parish_id = id, name, lon=good_lon, lat=good_lat)
+# 
+# d = left_join(d, parishes) %>%
+#   filter(birth_year > 1000)
+# length(unique(d$parish_id))
+# 
+# d = select(d, birth_year, 
+#                   parish_id,
+#                   child_first_nameN,
+#                   dad_last_nameN,
+#            lon, lat)
+# write_csv(d, "data/finnish_data_selected.csv")
+
+d = read_csv("data/finnish_data_selected.csv")
+
+min(d$birth_year)
+max(d$birth_year)
+summary(d$birth_year)
+
+nrow(d)
+length(unique(d$child_first_nameN))
+
+d$birth_year_cut = cut(d$birth_year, breaks = c(-Inf, 1730, 1780, 1830, 1880, Inf),
+                       labels=c("up to 1730", "1730-1780", "1780-1830", "1830-1880", "post-1880"))
+
+table(d$birth_year_cut) %>%
+  xtable()
+# sample in groups of 50
+samp_num = 50
+set.seed(42)
+s = group_by(d, parish_id, birth_year_cut) %>%
+  mutate(count = n()) %>%
+  filter(count >= samp_num) %>%
+  sample_n(samp_num)
+
+length(table(s$parish_id))
+nrow(s)
+
+##########
+d$hasLast = is.na(d$dad_last_nameN) == F
+
+has.last.parishes = d %>%
+  group_by(parish_id, lon, lat, birth_year_cut) %>%
+  summarise(mean.hasLast = mean(hasLast, na.rm=T)) %>%
+  ungroup() %>%
+  mutate(`Proportion with hereditry patronym` = mean.hasLast,
+  ) #scale(mean.hasLast)[, 1])
+
+summary(lm(data=filter(has.last.parishes, birth_year_cut == "up to 1730"),
+           mean.hasLast ~ lon))  
+d$birth_year_cut_num = as.numeric(as.factor(d$birth_year_cut))
+
+d$east.vs.west = ifelse(d$lon > median(d$lon, na.rm=T), "east", "west")
+group_by(d, east.vs.west, birth_year_cut) %>%
+  summarise(mean.hasLast = mean(hasLast)) %>%
+  filter(is.na(east.vs.west) == F) %>%
+  spread(east.vs.west, mean.hasLast) %>%
+  xtable()
+
+has.last.parishes$birth_year_cut_num = as.numeric(as.factor(has.last.parishes$birth_year_cut))
+l.par = lmer(mean.hasLast ~ lon * birth_year_cut_num + (1 + birth_year_cut_num|parish_id),
+             data=has.last.parishes)
+l.par.noint = lmer(mean.hasLast ~ lon + birth_year_cut_num + (1 + birth_year_cut_num|parish_id),
+                   data=has.last.parishes)
+
+summary(l.par)
+anova(l.par, l.par.noint)
+
+# calculate gradients: 
+has.last.parishes %>%
+  ggplot(aes(x=lon, y=mean.hasLast)) +
+  facet_wrap(~birth_year_cut) +
+  stat_cor(aes(label = paste(after_stat(r.label), after_stat(p.label), sep = "~`,`~")), 
+           label.x=20, label.y=1.5, size=3, p.accuracy = 0.001) +
+  geom_smooth(method='lm') +
+  geom_point()
+
+
+has.last.parishes %>% 
+  ggplot(aes(x=lat, y=mean.hasLast)) +
+  facet_wrap(~birth_year_cut) +
+  stat_cor(aes(label = paste(after_stat(r.label), after_stat(p.label), sep = "~`,`~")), 
+           label.x=60, label.y=1.5, size=3, p.accuracy = 0.001) +
+  geom_smooth(method='lm') +
+  geom_point()
+
+xys <- tribble(
+  ~x, ~y, ~birth_year_cut,
+  0.59/sqrt(0.59^2+0.53^2), 0.53/sqrt(0.59^2+0.53^2), 'up to 1730',
+  0.46/sqrt(0.46^2+0.40^2), 0.40/sqrt(0.46^2+0.40^2), '1730-1780',
+  0.40/sqrt(0.40^2+0.38^2), 0.38/sqrt(0.40^2+0.38^2), '1780-1830',
+  0.39/sqrt(0.39^2+0.31^2), 0.31/sqrt(0.39^2+0.31^2), '1830-1880',
+  0.65/sqrt(0.65^2+0.22^2), 0.22/sqrt(0.65^2+0.22^2), 'post-1880'
+) 
+
+
+p2 = ggplot(has.last.parishes %>% left_join(xys, by='birth_year_cut') %>%
+              group_by(birth_year_cut) %>% 
+              mutate(mean_lon = mean(lon, na.rm=TRUE), 
+                     mean_lat = mean(lat, na.rm=TRUE),
+                     birth_year_cut = factor(birth_year_cut,
+                                             levels=c('up to 1730',
+                                                      '1730-1780',
+                                                      '1780-1830',
+                                                      '1830-1880',
+                                                      'post-1880'))), 
+            aes(x=lon, y=lat, colour=`Proportion with hereditry patronym`)) + 
+  borders(regions = "Finland", colour = "gray50", fill = "gray50") +
+  geom_point() + 
+  geom_segment(aes(x=mean_lon, y=mean_lat, xend=mean_lon+x, yend=mean_lat+y), arrow=arrow(length=unit(0.25, 'cm')), color='white') +
+  coord_quickmap() + 
+  scale_colour_gradient2(
+    low = ("red"),
+    mid = "white",
+    high = ("blue"),
+    midpoint = .5,
+    space = "Lab",
+    na.value = "grey50",
+    guide = "colourbar",
+    aesthetics = "colour"
+  )  +
+  theme_bw(12) +
+  facet_wrap(~birth_year_cut, ncol=5) +
+  xlab("Longitude") + 
+  ylab("Latitude") +
+  theme(legend.position="bottom")
+p2
+
+
+
+summary(lm(data=has.last.parishes, mean.hasLast ~ lon))
+
+
+
+
+
+
+
+# first name entropy
+first.ent = group_by(s, child_first_nameN, parish_id, birth_year_cut, lon, lat) %>%
+  summarise(freq = n()/samp_num) %>%
+  group_by(parish_id, birth_year_cut, lon, lat) %>%
+  summarise(first.ent = -sum(freq*log2(freq)),
+            n=n()) 
+
+first.ent.early = first.ent 
+first.ent.early$first.ent.normalize = scale(first.ent.early$first.ent)
+
+
+p1 = ggplot(first.ent.early, aes(x=lon, y=lat, colour=first.ent)) + 
+  borders(regions = c("Finland"), colour = "gray50", fill = "gray50") +
+  geom_point(size=1) + 
+  coord_quickmap() + 
+  scale_colour_gradient2(
+    low = ("red"),
+    mid = "white",
+    high = ("blue"),
+    midpoint = median(first.ent.early$first.ent),
+    space = "Lab",
+    na.value = "grey50",
+    guide = "colourbar",
+    aesthetics = "colour"
+  ) +
+  theme_bw() + 
+  facet_wrap(~birth_year_cut, ncol=5) +
+  xlab("Longitude") + 
+  ylab("Latitude") + 
+  labs(colour="Prefix-name entropy") +
+  theme(legend.position="bottom")
+
+pdf("imgs/first_name_ent.pdf", width=7, height=4)
+p1
+dev.off()
+#ggsave("imgs/first_name_ent.png", width=7, height=4)  
+
+summary(lm(data=first.ent.early, first.ent ~ lon))
+summary(lm(data=first.ent.early, first.ent ~ lat))
+
+set.seed(42)
+first.ent.early$birthyearnum = as.numeric(as.factor(first.ent.early$birth_year_cut))
+l = lmer(data=first.ent.early, 
+         first.ent ~ birthyearnum * lon + (birthyearnum | parish_id),
+         REML= F)
+l0 = lmer(data=first.ent.early, 
+          first.ent ~ birthyearnum + lon + (birthyearnum | parish_id),
+          REML=F)
+anova(l, l0)
+summary(l)
+
+pdf('imgs/double_finland.pdf', width=7, height=8)
+grid.arrange(p2, p1, ncol=1)
+dev.off()
+
+
+# compare parishes lat name pct with first name ent
+first.last = left_join(has.last.parishes, first.ent.early)
+first.last$scale.first.ent = scale(first.last$first.ent)[, 1]
+first.last$scale.pat = scale(first.last$`Proportion with hereditry patronym`)[, 1]
+
+ggplot(first.last, aes(x=`scale.pat`, y=scale.first.ent)) +
+  geom_point() + 
+  geom_smooth(method=lm) +
+  stat_cor(aes(label = paste(after_stat(r.label), after_stat(p.label), sep = "~`,`~")),
+          label.x=-1.5, label.y=3, size=3, p.accuracy = 0.001) +
+  theme_classic(18) +
+  xlab('normalized percentage of byname') +
+  ylab('normalized prefix-name entropy')
+
+summary(lm(first.last$scale.pat ~  first.last$scale.first.ent))
+
+  
+
+select(first.last, scale.pat, lon, scale.first.ent, birth_year_cut) %>%
+  na.omit() %>%
+  group_by(birth_year_cut) %>%
+  summarise(`Corr: Patronyms:FirstNameEnt`=cor(scale.pat, scale.first.ent, method="spearman"),
+            `Corr: Patronyms:Longitude` = cor(scale.pat, lon, method="spearman"),
+            `Corr: FirstNameEnt:Longitude` = cor(scale.first.ent, lon, method="spearman")) %>%
+  xtable()
+
+select(first.last, scale.pat, lon, birth_year_cut) %>%
+  na.omit() %>%
+  group_by(birth_year_cut) %>%
+  summarise(cor=cor(scale.pat, lon, method="spearman")) %>%
+  xtable()
+
+
+select(first.last, scale.first.ent, lon, birth_year_cut) %>%
+  na.omit() %>%
+  group_by(birth_year_cut) %>%
+  summarise(cor=cor(scale.first.ent, lon, method="spearman")) %>%
+  xtable()
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,25 @@
+country,variable,example,CountryImproved
+us,Fixed Inherited Name,Kanwisher,U.S.
+us,Flexible Given Name,Nancy,U.S.
+us,Flexible Given Name + Fixed Inherited Name Init.,Nancy K.,U.S.
+us,Fiexible Given Name Init. + Fixed Inherited Name,N. Kanwisher,U.S.
+russia,Fixed Inherited Name,Kolmogorov,Russia
+russia,Flexible Given Name,Andrey,Russia
+russia,Flexible Given Name + Fixed Inherited Name Init.,Andrey K.,Russia
+russia,Fiexible Given Name Init. + Fixed Inherited Name,A. Kolmogorov,Russia
+korea,Fixed Inherited Name,Lee,South Korea
+korea,Flexible Given Name,Hyun Jae,South Korea
+korea,Flexible Given Name + Fixed Inherited Name Init.,L. Hyun Jae,South Korea
+korea,Fiexible Given Name Init. + Fixed Inherited Name,Lee H.,South Korea
+france,Fixed Inherited Name,Curie,France
+france,Flexible Given Name,Marie,France
+france,Flexible Given Name + Fixed Inherited Name Init.,Marie C.,France
+france,Given Init. + Family,M. Curie,France
+finland,Fixed Inherited Name,Tuomilehto,Finland
+finland,Flexible Given Name,Jaakko,Finland
+finland,Flexible Given Name + Fixed Inherited Name Init.,Jaakko T.,Finland
+finland,Fiexible Given Name Init. + Fixed Inherited Name,J. Tuomilehto,Finland
+china,Fixed Inherited Name,Zhao,China
+china,Flexible Given Name,Yufen,China
+china,Flexible Given Name + Fixed Inherited Name Init.,Z. Yufen,China
+china,Fiexible Given Name Init. + Fixed Inherited Name,Zhao Y.,China
