@@ -9,6 +9,9 @@ Note: as mentioned in the paper, we call the element in a personal that goes fir
 ### Data
 This folder contains the data in our analysis:
 - `Chinese (US 2010)`: containing the file `chinese_american_data.csv`, a subset of Chinese-American bynames pulled from the US 2010 Census
-- `Chinese_name_data`: a folder containing the raw files in analyses related to Chinese names
+- `Chinese_name_data`: a folder containing the raw files related to Chinese names
     - `chinese_surnames_400.csv`: a list of 400 most common prefix-names in Mainland China. The data is taken from [Wikipedia](https://en.wikipedia.org/wiki/List_of_common_Chinese_surnames#Surname_list). 
-    - `taiwan_2018.csv`: a list of 500 most common Taiwanese prefix-names. The data is manually extracte4d from the 2018 population census conducted by the Taiwanese Ministry of Interior [link](https://www.ris.gov.tw/documents/data/5/2/107namestat.pdf) (See Table 57, pp.282-304)
+    - `taiwan_2018.csv`: a list of 500 most common Taiwanese prefix-names. The data is manually extracted from the 2018 population census conducted by the Taiwanese Ministry of Interior ([link](https://www.ris.gov.tw/documents/data/5/2/107namestat.pdf). See Table 57, pp.282-304).
+    - `taiwan_givenname.csv`; a list of 100 most common Taiwanese men bynames and 100 most common Taiwanese women bynames. The data is manually extracted from the 2018 population census conducted by the Taiwanese Ministry of Interior ([link](https://www.ris.gov.tw/documents/data/5/2/107namestat.pdf). See Table 51).
+- `Korea`: a folder containing the raw files related to Korean names
+    - `korea_2015_hanja`: a list of Korean prefix-names with a population greater than 5. The data is taken from the 2015 population census data published by Korean Statistical Information Service ([link](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1IN15SD&conn_path=I2))
