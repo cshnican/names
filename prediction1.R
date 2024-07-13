@@ -321,53 +321,6 @@ ents %>%
   xtable() %>%
   print(include.rownames=FALSE, digits=0)
 
-ents %>% 
-  left_join(sum.d %>%
-              mutate(sample = as.character(sample)), by = c('Locale'='region')) %>% 
-  left_join(ents_higher_bound %>% dplyr::select(Locale, ent_higher_bound), by='Locale') %>%
-  mutate(`name entropy` = ent,
-         `name entropy higher estimate` = ent_higher_bound) %>%
-  dplyr::select(Locale, `name count`, `cut-offs`, sample, `name entropy`, `name entropy higher estimate`) %>%
-  arrange(-`name entropy higher estimate`) %>%
-  rename(`higher bound (bits)` =`name entropy higher estimate`,
-         `lower bound (bits)` = `name entropy`) %>% 
-  filter(!Locale %in%  c("Beith (1700-1800)", "Govan (1700-1800)", "Earlstone (1700-1800)", 
-                     "Dingwall (1700-1800)", "California (1910-2010)", "Delaware (1910-2010)",
-                     "Chinese-American (2010 Census)")) %>%
-  mutate(category = case_when(
-    Locale %in% c("Taiwan (2018 Census)", "Korea (2015 Census)", "Vietnamese-American (2010 Census)") ~ 'East Asian',
-    Locale %in% c("Scottish (1700-1800)", "Northern England (1701-1800)", "Finland pre-1800") ~ 'Western pre-regulation',
-    Locale %in% c("Finland post-1900", "All USA (1910-2010)") ~ 'Western post-regulation'
-  ),
-    category = factor(category, levels = c('East Asian', 'Western pre-regulation', 'Western post-regulation'))) %>%
-  ggplot(aes(x=reorder(Locale, -`lower bound (bits)`), y=`lower bound (bits)`, fill=category)) +
-  # facet_wrap(scale = 'free_y') +
-  geom_col() +
-  coord_flip() +
-  geom_vline(xintercept = 2.5, linetype = 'dashed') +
-  geom_text(aes(y = 9, x = 3, label = 'pre-regulation'), size=5) +
-  geom_text(aes(y = 9, x = 2, label = 'post-regulation'), size=5) +
-  theme_classic(20) +
-  # scale_fill_manual(values = c("Vietnamese-American (2010 Census)" =  "#003566", 
-  #                              "Korea (2015 Census)" = "#4CC9F0",
-  #                              #"China-Mainland" = "#134611", 
-  #                              "Chinese-American (2010 Census)" = '#3DA35D',
-  #                              "Taiwan (2018 Census)" = "#96E072",
-  #                              "Earlstone (1700-1800)" = "orange", 
-  #                              "Govan (1700-1800)" = "darkorange",
-  #                              "Dingwall (1700-1800)" = "sienna", 
-  #                              "Beith (1700-1800)" = "#BF360C",
-  #                              "Northern England (1701-1800)" = "#B45F06",
-  #                              "Finland post-1900" = "darkgray",
-  #                              "Finland pre-1800" = "gray",
-  #                              "California (1910-2010)" = "red",
-  #                              "Delaware (1910-2010)" = "pink",
-  #                              "All USA (1910-2010)" = 'darkred',
-  #                              "Scottish (1700-1800)" = '#FFA500')) +
-  scale_fill_manual(values = c('#FF4444', 'lightblue', 'navy')) +
-  theme(legend.position = 'bottom') +
-  xlab('Society') +
-  ylab('lower bound entropy estimate (bits)')
 
 
 
