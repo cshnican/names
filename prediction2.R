@@ -102,48 +102,6 @@ has.last.parishes %>%
   geom_smooth(method='lm') +
   geom_point()
 
-xys <- tribble(
-  ~x, ~y, ~birth_year_cut,
-  0.59/sqrt(0.59^2+0.53^2), 0.53/sqrt(0.59^2+0.53^2), 'up to 1730',
-  0.46/sqrt(0.46^2+0.40^2), 0.40/sqrt(0.46^2+0.40^2), '1730-1780',
-  0.40/sqrt(0.40^2+0.38^2), 0.38/sqrt(0.40^2+0.38^2), '1780-1830',
-  0.39/sqrt(0.39^2+0.31^2), 0.31/sqrt(0.39^2+0.31^2), '1830-1880',
-  0.65/sqrt(0.65^2+0.22^2), 0.22/sqrt(0.65^2+0.22^2), 'post-1880'
-) 
-
-
-p2 = ggplot(has.last.parishes %>% left_join(xys, by='birth_year_cut') %>%
-              group_by(birth_year_cut) %>% 
-              mutate(mean_lon = mean(lon, na.rm=TRUE), 
-                     mean_lat = mean(lat, na.rm=TRUE),
-                     birth_year_cut = factor(birth_year_cut,
-                                             levels=c('up to 1730',
-                                                      '1730-1780',
-                                                      '1780-1830',
-                                                      '1830-1880',
-                                                      'post-1880'))), 
-            aes(x=lon, y=lat, colour=`Proportion with hereditry patronym`)) + 
-  borders(regions = "Finland", colour = "gray50", fill = "gray50") +
-  geom_point() + 
-  geom_segment(aes(x=mean_lon, y=mean_lat, xend=mean_lon+x, yend=mean_lat+y), arrow=arrow(length=unit(0.25, 'cm')), color='white') +
-  coord_quickmap() + 
-  scale_colour_gradient2(
-    low = ("red"),
-    mid = "white",
-    high = ("blue"),
-    midpoint = .5,
-    space = "Lab",
-    na.value = "grey50",
-    guide = "colourbar",
-    aesthetics = "colour"
-  )  +
-  theme_bw(12) +
-  facet_wrap(~birth_year_cut, ncol=5) +
-  xlab("Longitude") + 
-  ylab("Latitude") +
-  theme(legend.position="bottom")
-p2
-
 
 
 summary(lm(data=has.last.parishes, mean.hasLast ~ lon))
