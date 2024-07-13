@@ -417,21 +417,6 @@ ggplot(tab %>% pivot_longer(cols = -country, names_to = "category", values_to = 
 
 tab %>% xtable()
 
-# need to point out by increasing the entropy of prefix-names; the job done by bynames to reduce entropy is reduced 
-
-
-# playground: Indonesian MP names, downsampled to 425
-set.seed(42)
-indonesia <- read.csv('Data/Indonesia/DPR.csv') %>% 
-  sample_n(size=s) 
-
-d.ent.prefix_name.id <- indonesia %>% group_by(country, Nama1) %>%
-  summarise(n=n()) %>% ungroup() %>%
-  mutate(prob=n/s) %>% 
-  group_by(country) %>%
-  summarize(prefix_name.entropy = sum(-prob*log2(prob)))
-
-
 
 
 
