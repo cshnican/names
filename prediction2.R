@@ -163,7 +163,7 @@ l0 = lmer(data=first.ent.early,
 anova(l, l0)
 summary(l)
 
-pdf('imgs/double_finland.pdf', width=7, height=8)
+pdf('imgs/figure3.pdf', width=7, height=8)
 grid.arrange(p2, p1, ncol=1)
 dev.off()
 

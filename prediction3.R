@@ -375,47 +375,7 @@ d.ent.byname <- d.prefix.name.and.byname %>%
   group_by(country) %>%
   summarize(byname.entropy = -sum(byname.frequency*log2(byname.frequency)))
 
-# calculate conditional entropy
-conditional_entropy <- d.prefix.name.and.byname %>% 
-  group_by(country) %>%
-  mutate(total = n()) %>% ungroup() %>%
-  group_by(country, prefix.name) %>%
-  mutate(p.prefix.name = n()/total) %>% ungroup() %>%
-  group_by(country, prefix.name, byname) %>%
-  mutate(p.prefix.name.byname = n()/total) %>% ungroup() %>%
-  select(country, prefix.name, byname, p.prefix.name, p.prefix.name.byname) %>% distinct() %>%
-  mutate(p.byname.given.prefix.name = p.prefix.name.byname/p.prefix.name) %>% 
-  group_by(country) %>%
-  summarise(conditional_entropy = -sum(p.prefix.name.byname*log2(p.byname.given.prefix.name)))
 
-total_entropy <- d.prefix.name.and.byname %>% 
-  group_by(country) %>%
-  mutate(total = n()) %>% ungroup() %>%
-  group_by(country, prefix.name, byname) %>%
-  mutate(p.prefix.name.byname = n()/total) %>% ungroup() %>%
-  select(country, prefix.name, byname, p.prefix.name.byname) %>% distinct() %>%
-  group_by(country) %>%
-  summarise(total_entropy = -sum(p.prefix.name.byname*log2(p.prefix.name.byname)))
-
-
-
-tab <- left_join(
-  d.ent.prefix_name, d.ent.byname, by='country'
-) %>% 
-  left_join(
-    conditional_entropy, by='country'
-    ) %>% 
-  left_join(
-    total_entropy, by='country'
-  ) 
-
-ggplot(tab %>% pivot_longer(cols = -country, names_to = "category", values_to = "value") %>%
-         mutate(category=factor(category, levels=c('prefix_name.entropy', 'conditional_entropy', 'byname.entropy', 'total_entropy'))), 
-       aes(x=country, y=value, fill=category)) +
-  geom_col(position='dodge') +
-  theme_classic(18)
-
-tab %>% xtable()
 
 
 
