@@ -25,3 +25,6 @@ This folder contains the data in our analysis:
 - `US_census_all`: US baby name data, a dataset published by the Social Security Administration. The dataset is downloaded from [here](https://www.ssa.gov/oact/babynames/limits.html) (see `State-specific data`).
     - `AK.txt`, ..., `WY.txt`: the data in each state and DC
     - `StateReadMe.pdf`: a pdf describing the dataset
+- `Vietnam (US 2010)`: containing the file `vietnamese_american_data.csv`, a subset of Vietnamese-American bynames pulled from the US 2010 Census
+- `us_census_name_2010`; a folder containing the byname data from the 2020 US Census, downloaded from the US Census Bureau ([link](https://www.census.gov/topics/population/genealogy/data/2010_surnames.html))
+    - the file used in this study is `./surnames_appearing_more_than_100_times/Names_2010Census.csv`.
