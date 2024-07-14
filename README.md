@@ -22,4 +22,6 @@ This folder contains the data in our analysis:
     - `earlstone.csv`, `earlstone.xlsx`: prefix-name distribution in Earlstone
     - `govan.csv`, `govan.xlsx`: prefix-name distribution in Govan
     - `scot_source_info.txt`: a .txt file summarizing the content above
-
+- `US_census_all`: US baby name data, a dataset published by the Social Security Administration. The dataset is downloaded from [here](https://www.ssa.gov/oact/babynames/limits.html) (see `State-specific data`).
+    - `AK.txt`, ..., `WY.txt`: the data in each state and DC
+    - `StateReadMe.pdf`: a pdf describing the dataset
