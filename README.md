@@ -107,7 +107,7 @@ Figure 5 is assembled in LaTeX from the following files:
 - `pairwise_Taiwan (2018 Census).pdf`
 - `pairwise_Vietnamese-American (2010 Census).pdf`
 
-#### Figure 5
+#### Figure 6
 The main file is `figure6.pdf`
 
 #### Figure 7
