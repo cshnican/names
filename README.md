@@ -1,6 +1,8 @@
 # Cross-cultural structures of personal name systems reflect general communicative principles
 Michael Ramscar, Sihan Chen, Richard Futrell, Kyle Mahowald
 
+![Figure2a from the paper](./imgs/proportion_relative_to_top.pdf)
+
 This Github repository contains the data, the analysis script, and the figures in the paper.
 
 ## A description of the repository content
@@ -83,6 +85,9 @@ This folder contains the data in our analysis.
 
 ### imgs
 This folder contains all the images, in PDF format
+
+#### Figure 1
+The main file is `figure1.pdf`
 
 #### Figure 2
 The main file is `figure2.pdf`
