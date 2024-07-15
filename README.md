@@ -1,7 +1,7 @@
 # Cross-cultural structures of personal name systems reflect general communicative principles
 Michael Ramscar, Sihan Chen, Richard Futrell, Kyle Mahowald
 
-<img src="imgs/proportion_relative_to_top.png" alt="Figure 2A" width="400"/>
+<img src="imgs/proportion_relative_to_top.png" alt="Figure 2A" width="600"/>
 
 
 This Github repository contains the data, the analysis script, and the figures in the paper.
