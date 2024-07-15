@@ -7,12 +7,17 @@ This Github repository contains the data, the analysis script, and the figures i
 Note: as mentioned in the paper, we call the element in a personal that goes first *prefix-name* and the element that goes second *byname*. For example, in the name *John Smith*, *John* is the prefix-name and *Smith* is the byname. In the name *Li Xiaoping*, *Li* is the prefix-name and *Xiaoping* is the byname.
 
 ### Scripts
-To reproduce all the main figures, run `prediction1.R`, `prediction2.R`, `prediction3.R` first, and then run `plot_merged_figs.R`
-- `prediction1.R`: code for the first analysis 
+To reproduce all the main figures, download `finnish_data_selected.csv` from [here](https://drive.google.com/file/d/12peW30OdjllRnHIp3N5-hMDXJlEn59G8/view?usp=sharing), put the file inside the `Data` folder. Run `prediction1.R`, `top3_english.R`, `prediction2.R`, `prediction3.R` first, and then run `plot_merged_figs.R`. 
+
+A description of the scripts:
+- `prediction1.R`: code for the first analysis, generating Figure 6 and all the subplots in Figure 5 
 - `prediction2.R`: code for the second analysis, generating Figure 3
 - `prediction3.R`: code for the third analysis
 - `plot_merged_figs.R`: code to generate multi-panel figures (Figure 2 and Figure 4)
-
+- `supp_us_name_vs_population.R`: code to generate Figure 7
+- `top3_english.R`: code for Figure 2b
+- `make_chinese_names_from_US_census.R`: code to extract Chinese prefix-name data from the 2010 US Census
+- `make_vietnamese_names_from_US_census.R`: code to extract Vietnamese prefix-name data from the 2010 US Census
 
 ### Data
 This folder contains the data in our analysis:
@@ -37,6 +42,7 @@ This folder contains the data in our analysis:
 - `us_census_name_2010`: a folder containing the byname data from the 2020 US Census, downloaded from the US Census Bureau ([link](https://www.census.gov/topics/population/genealogy/data/2010_surnames.html))
     - the file used in this study is `./surnames_appearing_more_than_100_times/Names_2010Census.csv`.
 - `us_population_change`: containing the file `population_change_data.csv`, a dataset containing the population census data in each state (plus DC and Puerto Rico) every 10 years. The dataset is downloaded from [here](https://www2.census.gov/programs-surveys/decennial/2020/data/apportionment/population-change-data-table.xlsx)
+- `finnish_data_selected.csv`: Finnish birth records from 1700 to 1917. Since the file size exceeds Github's limit, we moved it to Google Drive, and it can be downloaded [here](https://drive.google.com/file/d/12peW30OdjllRnHIp3N5-hMDXJlEn59G8/view?usp=sharing). This data was made available by Eric Malmi and was built for Malmi et al. (2018) off the HisKi Finnish genealogical data set. This data set was gathered and cleaned, as described in Malmi et al. (2018). [link to Malmi et al., (2018)](https://arxiv.org/abs/1802.06055)
 - `CA.txt`, `DE.txt`: copies of the same two files from the `us_census_all` folder - baby name data from California (the most populous US state) and Delaware (one of the least populous US states)
 - `downsampled_scinames.csv` (not available): a list of 2550 scientist names from the national academy of 6 countries (we sampled 425 names from each)
     - 425 names from the National Academy of Sciences (USA) [link](https://en.wikipedia.org/wiki/List_of_members_of_the_National_Academy_of_Sciences)
@@ -53,5 +59,8 @@ This folder contains the data in our analysis:
 - `northern_england.csv`: names from two pre-modern English counties for the period between 1700 and 1800. Extracted from George Bell’s parish marriage register transcriptions for Northumberland and Durham between 1701 and 1800 [link](https://www.galbithink.org/names/ncumb.txt)
 - `plot_dupes_helper.csv`: scientist names indexed in different styles, as an illustration (Figure 4b).
 - `sukunimitilasto-2023-08-01-dvv.csv`, `sukunimitilasto-2023-08-01-dvv.xlsx`: Finnish byname data in 2023, downloaded from the Population Information System [link](https://www.avoindata.fi/data/fi/dataset/none/resource/957d19a5-b87a-4c4d-8595-49c22d9d3c58?inner_span=True) (Notice: at the time of the analysis, the latest version was 2023-08-01. The dataset may have been updated now.)
+
+### imgs
+This folder contains all the images, in PDF format
 
 

@@ -122,7 +122,7 @@ ggplot(agg %>% mutate(state=factor(state, levels=population_rank)), aes(x=popula
 agg_cumulative <- population_data %>%
   inner_join(name_data_cumulative, by=c('state', 'year'='cumulative_year'))
   
-pdf("imgs/pop_and_by_decade_entropy.pdf", height=9, width=12)
+pdf("imgs/figure7.pdf", height=9, width=12)
 
 ggplot(agg_cumulative %>% 
          mutate(state=factor(state, levels=population_rank)), aes(x=population_rel_max, y=perplexity_rel_max)) +

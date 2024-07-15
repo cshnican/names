@@ -211,7 +211,7 @@ p = ggplot(filter(d.g3, variable == i,
   theme_bw(12) + 
   facet_grid(variable ~ variable2) + #, scales = "free")  +
   xlab("Log frequency") + ylab("Log frequency")
-pdf(paste0("imgs/", i, ".pdf"), width=6, height=3)
+pdf(paste0("imgs/pairwise_", i, ".pdf"), width=6, height=3)
 print(p)
 dev.off()
 # ggsave(paste0("imgs/", i, ".png"), width=6, height=3)
@@ -231,7 +231,7 @@ d.g3 = left_join(d.g, d.g2)
 d.g3 = mutate(d.g3, value = log10(value),
               value2=log10(value2))
 
-pdf("imgs/scottish_pairwise.pdf", width=7, height=8)
+pdf("imgs/figure6.pdf", width=7, height=8)
 ggplot(d.g3, aes(x=value, y=value2)) + geom_point() + 
   theme_bw(12) + 
   #geom_smooth(method=lm, se=F) + 
