@@ -14,6 +14,7 @@ A description of the scripts:
 - `prediction2.R`: code for the second analysis, generating Figure 3
 - `prediction3.R`: code for the third analysis
 - `plot_merged_figs.R`: code to generate multi-panel figures (Figure 2 and Figure 4)
+- `byname_analysis.R`: code to generate Figure 4a
 - `supp_us_name_vs_population.R`: code to generate Figure 7
 - `top3_english.R`: code for Figure 2b
 - `make_chinese_names_from_US_census.R`: code to extract Chinese prefix-name data from the 2010 US Census
@@ -83,5 +84,32 @@ This folder contains the data in our analysis.
 ### imgs
 This folder contains all the images, in PDF format
 
+#### Figure 2
+The main file is `figure2.pdf`
+- `proportion_relative_to_top.pdf`: Figure 2a
 
+#### Figure 3
+The main file is `figure3.pdf`
+
+#### Figure 4
+The main file is `figure4.pdf`
+- `prefix_name_vs_byname.pdf`: Figure 4a
+- `double_scinames.pdf`: Figure 4b and 4c
+- `number_of_neighbors.pdf`: Figure 4d
+
+#### Figure 5
+Figure 5 is assembled in LaTeX from the following files:
+- `pairwise_California (1910-2010).pdf`
+- `pairwise_Chinese-American (2010 Census).pdf`
+- `pairwise_Korea (2015 Census).pdf`
+- `pairwise_Northern England (1701-1800).pdf`
+- `pairwise_Scottish (1700-1800).pdf`
+- `pairwise_Taiwan (2018 Census).pdf`
+- `pairwise_Vietnamese-American (2010 Census).pdf`
+
+#### Figure 5
+The main file is `figure6.pdf`
+
+#### Figure 7
+The main file is `figure7.pdf`
 
