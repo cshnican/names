@@ -31,11 +31,23 @@ d <- d %>%
          given.plus.surname=paste(given, surname),
          given.init.surname=paste(given.init, surname),
          given.surname.init=paste(given, surname.init)) %>%
-  separate(given, sep="[ -]", into=c("x", 'middle'), remove=F) %>% 
+  separate(given, sep="[ -]", into=c("x", 'middle'), remove=F) 
+
+
+# make new countries called Korea-2 and Russia-2
+d_russia_2 <- d %>% 
+  filter(country == 'russia_patronyms') %>% 
+  mutate(country = 'russia-2') %>% 
   mutate(middle = ifelse(is.na(middle), "", middle),
-         korean.given.two.surname=paste(toupper(substr(given, 1, 1)), toupper(substr(middle, 1, 1)), surname)) 
+         given.init.surname=paste(toupper(substr(given, 1, 1)), toupper(substr(middle, 1, 1)), surname)) 
 
+d_korea_2 <- d %>% 
+  filter(country == 'korea') %>% 
+  mutate(country = 'korea-2') %>% 
+  mutate(middle = ifelse(is.na(middle), "", middle),
+         given.init.surname=paste(toupper(substr(given, 1, 1)), toupper(substr(middle, 1, 1)), surname))
 
+d <- bind_rows(d, d_korea_2, d_russia_2)
 
   
 group_by(d, given) %>% summarise(n=n()) %>% arrange(-n)
@@ -62,19 +74,21 @@ d.dupe.helper = left_join(dupe.helper, d.dupe) %>%
   mutate(IsClear = value < 30,
          Nonwestern = country %in% c('korea', 'china'),
          hasplus = grepl("\\+", variable),
-         CountryImproved = factor(CountryImproved, levels=c("China", "South Korea", "Finland", "France", "Russia", "U.S.")),
+         CountryImproved = factor(CountryImproved, levels=c("China", "South Korea", "South Korea-2",
+                                                            "Finland", "France", "Russia", "Russia-2", "U.S.")),
          full.family = ifelse(variable %in% c("Fixed Inherited Name", "Fiexible Given Name Init. + Fixed Inherited Name"),
                               "Full Inherited Name",
                               "Full Given Name"),
          has.init = ifelse(grepl("Init", variable), "Initals", "No initials"))
 
 p1 = ggplot(d.dupe.helper, aes(x=CountryImproved, y=value, alpha=IsClear, group=variable)) + geom_bar(stat='identity', position=position_dodge()) +
-  theme_classic(12) +
+  theme_classic(10) +
   theme(axis.text.x = element_text(angle = 90),
         legend.position = "none")  +
   coord_flip() +
-  geom_text(data=d.dupe.helper, aes(x=CountryImproved, y=0, label=example, group=variable),hjust=1, position= position_dodge(width = .9))  +
-  scale_y_continuous(breaks=c(0, 100, 200,300), limits=c(-60, 350)) + 
+  geom_text(data=d.dupe.helper, aes(x=CountryImproved, y=0, label=example, group=variable),
+            hjust=1, position= position_dodge(width = .9), size=3)  +
+  scale_y_continuous(breaks=c(0, 100, 200,300), limits=c(-100, 350)) + 
   ylab("Number of Duplications") + xlab("") + 
   scale_alpha_discrete(range=c(.5, 1)) + 
   facet_grid( full.family ~ ., scales="free",space="free", drop=T) #
@@ -90,22 +104,24 @@ maxdist = rep(1/max(table(d$country)), max(table(d$country)))
 maxent = -sum(maxdist * log2(maxdist))
 
 
-korea.new = d %>% 
-  filter(country == 'korea') %>%
-  mutate(country = 'Korea-2',
-         given.init.surname =  paste(toupper(substr(given, 1, 1)),
-                                  toupper(substr(middle, 1, 1)),
-                                  surname))
+# korea.new = d %>% 
+#   filter(country == 'korea') %>%
+#   mutate(country = 'Korea-2',
+#          given.init.surname =  paste(toupper(substr(given, 1, 1)),
+#                                   toupper(substr(middle, 1, 1)),
+#                                   surname))
+# 
+# russia.pat <- d %>%
+#   filter(country == 'russia_patronyms') %>%
+#   mutate(country = 'Russia-2',
+#          given.init.surname=paste(toupper(substr(given, 1, 1)),
+#                                toupper(substr(patronym, 1, 1)),
+#                                surname)
+#          )
 
-russia.pat <- d %>%
-  filter(country == 'russia_patronyms') %>%
-  mutate(country = 'Russia-2',
-         given.init.surname=paste(toupper(substr(given, 1, 1)),
-                               toupper(substr(patronym, 1, 1)),
-                               surname)
-         )
+# d.ent.base = bind_rows(d %>% filter(grepl("patr", country) == F), korea.new, russia.pat)
 
-d.ent.base = bind_rows(d %>% filter(grepl("patr", country) == F), korea.new, russia.pat)
+d.ent.base = bind_rows(d %>% filter(grepl("patr", country) == F))
 
 given.surname.init.ent = group_by(d.ent.base, given.surname.init, country) %>%
   summarise(freq = n()/s) %>%
@@ -154,18 +170,6 @@ p2 = ggplot(d.ents, aes(x=given.surname.init.ent, y=given.init.surname.ent, labe
   ylab("flexible given name initial + fixed inherited name entropy\n(C. Darwin / X. Li)")+
   theme_bw(14) 
 
-p2_alternative = ggplot(d.ents %>% 
-                          pivot_longer(cols=-country, names_to = 'name_style', values_to = 'entropy') %>%
-                          mutate(country = factor(country, levels=c('China', 'Korea', 'Korea-2', 'Russia', 'Russia-2', 'Finland', 'France', 'U.S.'))) %>%
-                          filter(!country %in% c('Korea-2', 'Russia-2')),
-                        aes(x=country, y=entropy)) +
-  facet_wrap(~name_style) +
-  coord_flip() +
-  geom_col() +
-  theme_classic(25) +
-  geom_vline(xintercept = 2.5, linetype='dashed') +
-  geom_hline(yintercept=maxent, lty="solid", size=1, alpha=.5) 
-  
 pdf("imgs/double_scinames.pdf", width=15, height=6)
 grid.arrange(p1, p2, ncol=2)
 dev.off()
@@ -239,6 +243,25 @@ korea.chinaway = group_by(korea, country) %>%
   mutate(mode = "Sang Yong K.", #"Korea (family init. + given name):\nK. Sang Yong",
          type = "inherited init.")
 
+korea_2 = filter(d, country == 'korea-2')
+korea_2.usway = group_by(korea_2, country) %>%
+  mutate(neigh =
+           rowSums(sapply(korea_2$given.init.surname, function(x)
+           {stringdist(x, korea_2$given.init.surname)}) <= 1) - 1
+  ) %>%
+  select(name=given.init.surname, neigh) %>%
+  mutate(mode = "S. Y. Kim", #"Korea (given init. + family name):\nS. Kim",
+         type = "given init.")
+
+korea_2.chinaway = group_by(korea_2, country) %>%
+  mutate(neigh =
+           rowSums(sapply(korea_2$given.surname.init, function(x)
+           {stringdist(x, korea_2$given.surname.init)}) <= 1) - 1
+  ) %>%
+  select(name=given.surname.init, neigh) %>%
+  mutate(mode = "Sang Yong K.", #"Korea (family init. + given name):\nK. Sang Yong",
+         type = "inherited init.")
+
 france = filter(d, country == "france")
 france.usway = group_by(france, country) %>%
   mutate(neigh =
@@ -277,6 +300,25 @@ russia.chinaway = group_by(russia, country) %>%
   mutate(mode = "Andrey K.", #"Russia (given name + family init.):\nAndrey K.",
          type = "inherited init.")
 
+russia_2 = filter(d, country == "russia-2")
+russia_2.usway = group_by(russia_2, country) %>%
+  mutate(neigh =
+           rowSums(sapply(russia_2$given.init.surname, function(x)
+           {stringdist(x, russia_2$given.init.surname)}) <= 1) - 1
+  ) %>%
+  select(name=given.init.surname, neigh) %>%
+  mutate(mode = "A. N. Kolmogorov", #"Russia (given init. + family name):\nA. Kolmogorov",
+         type = "given init.")
+
+russia_2.chinaway = group_by(russia_2, country) %>%
+  mutate(neigh =
+           rowSums(sapply(russia_2$given.surname.init, function(x)
+           {stringdist(x, russia_2$given.surname.init)}) <= 1) - 1
+  ) %>%
+  select(name=given.surname.init, neigh) %>%
+  mutate(mode = "Andrey Nikolaevich K.", #"Russia (given name + family init.):\nAndrey K.",
+         type = "inherited init.")
+
 finnish = filter(d, country == "finland")
 finnish.usway = group_by(finnish, country) %>%
   mutate(neigh =
@@ -298,9 +340,12 @@ finnish.chinaway = group_by(finnish, country) %>%
 
 
 neighs = bind_rows(china.usway, us.usway, us.chinaway, china.chinaway,
-                   korea.usway, korea.chinaway, france.usway, france.chinaway,
+                   korea.usway, korea.chinaway, 
+                   france.usway, france.chinaway,
                    russia.usway, russia.chinaway,
-                   finnish.usway, finnish.chinaway)
+                   finnish.usway, finnish.chinaway,
+                   korea_2.usway, korea_2.chinaway,
+                   russia_2.usway, russia_2.chinaway)
 
 
 neighs$type.pretty = ifelse(neighs$type == "flexible given init.", "flexible given init. + fixed inherited name (C. Darwin / X. Li)",
@@ -309,10 +354,10 @@ neighs$type.pretty = ifelse(neighs$type == "flexible given init.", "flexible giv
 neighbors.per.1000 = group_by(neighs, country, mode, type) %>%
   summarise(mean.neighbors.per.1000 = 1000 * mean(neigh)/n()) %>%
   mutate(mode = factor(mode, levels = c(
-    "X. Li", "Xiaoping L.", "E. Saarinen", "Eero S.", "M. Curie", "Marie C.", "S. Kim", "Sang Yong K.", "A. Kolmogorov", "Andrey K.",
-    "J. Smith", "Jamal S.")
-  ),
-  country = ifelse(country == 'us', 'US', str_to_title(country)))
+    "X. Li", "Xiaoping L.", "E. Saarinen", "Eero S.", "M. Curie", "Marie C.", "S. Kim", "S. Y. Kim", "Sang Yong K.", "A. Kolmogorov","A. N. Kolmogorov", "Andrey Nikolaevich K.", "Andrey K.",
+    "J. Smith", "Jamal S.")),
+  country = ifelse(country == 'us', 'US', str_to_title(country))
+  )
 
 group_by(neighs, mode) %>%
   summarise(m=mean(neigh))

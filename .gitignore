@@ -1,2 +1,4 @@
 # ignore the Finnish data - it's too big for github
 Data/finnish_data_selected.csv
+Data/downsampled_scinames.csv
+.DS_STORE

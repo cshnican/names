@@ -108,7 +108,37 @@ summary(lm(data=has.last.parishes, mean.hasLast ~ lon))
 
 
 
-
+p2 = ggplot(has.last.parishes %>%
+              group_by(birth_year_cut) %>% 
+              mutate(mean_lon = mean(lon, na.rm=TRUE), 
+                     mean_lat = mean(lat, na.rm=TRUE),
+                     birth_year_cut = factor(birth_year_cut,
+                                             levels=c('up to 1730',
+                                                      '1730-1780',
+                                                      '1780-1830',
+                                                      '1830-1880',
+                                                      'post-1880'))), 
+            aes(x=lon, y=lat, colour=`Proportion with hereditry patronym`)) + 
+  borders(regions = "Finland", colour = "gray50", fill = "gray50") +
+  geom_point() + 
+  geom_segment(aes(x=mean_lon, y=mean_lat, xend=mean_lon, yend=mean_lat), arrow=arrow(length=unit(0.25, 'cm')), color='white') +
+  coord_quickmap() + 
+  scale_colour_gradient2(
+    low = ("blue"),
+    mid = "white",
+    high = ("red"),
+    midpoint = .5,
+    space = "Lab",
+    na.value = "grey50",
+    guide = "colourbar",
+    aesthetics = "colour"
+  )  +
+  theme_bw(12) +
+  facet_wrap(~birth_year_cut, ncol=5) +
+  xlab("Longitude") + 
+  ylab("Latitude") +
+  theme(legend.position="bottom")
+p2
 
 
 
@@ -128,9 +158,9 @@ p1 = ggplot(first.ent.early, aes(x=lon, y=lat, colour=first.ent)) +
   geom_point(size=1) + 
   coord_quickmap() + 
   scale_colour_gradient2(
-    low = ("red"),
+    low = ("blue"),
     mid = "white",
-    high = ("blue"),
+    high = ("red"),
     midpoint = median(first.ent.early$first.ent),
     space = "Lab",
     na.value = "grey50",
@@ -164,7 +194,7 @@ anova(l, l0)
 summary(l)
 
 pdf('imgs/figure3.pdf', width=7, height=8)
-grid.arrange(p2, p1, ncol=1)
+ggarrange(p2, p1, ncol=1, labels=c('a)', 'b)'))
 dev.off()
 
 

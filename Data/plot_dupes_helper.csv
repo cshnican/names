@@ -14,7 +14,7 @@ korea,Fiexible Given Name Init. + Fixed Inherited Name,Lee H.,South Korea
 france,Fixed Inherited Name,Curie,France
 france,Flexible Given Name,Marie,France
 france,Flexible Given Name + Fixed Inherited Name Init.,Marie C.,France
-france,Given Init. + Family,M. Curie,France
+france,Fiexible Given Name Init. + Fixed Inherited Name,M. Curie,France
 finland,Fixed Inherited Name,Tuomilehto,Finland
 finland,Flexible Given Name,Jaakko,Finland
 finland,Flexible Given Name + Fixed Inherited Name Init.,Jaakko T.,Finland
@@ -23,3 +23,11 @@ china,Fixed Inherited Name,Zhao,China
 china,Flexible Given Name,Yufen,China
 china,Flexible Given Name + Fixed Inherited Name Init.,Z. Yufen,China
 china,Fiexible Given Name Init. + Fixed Inherited Name,Zhao Y.,China
+russia-2,Fixed Inherited Name,Kolmogorov,Russia-2
+russia-2,Flexible Given Name,Andrey Nikolaevich,Russia-2
+russia-2,Flexible Given Name + Fixed Inherited Name Init.,Andrey Nikolaevich K.,Russia-2
+russia-2,Fiexible Given Name Init. + Fixed Inherited Name,A. N. Kolmogorov,Russia-2
+korea-2,Fixed Inherited Name,Lee,South Korea-2
+korea-2,Flexible Given Name,Hyun Jae,South Korea-2
+korea-2,Flexible Given Name + Fixed Inherited Name Init.,L. Hyun Jae,South Korea-2
+korea-2,Fiexible Given Name Init. + Fixed Inherited Name,Lee H. J.,South Korea-2
