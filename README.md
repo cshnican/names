@@ -24,6 +24,7 @@ A description of the scripts:
 - `top3_english.R`: code for Figure 2b
 - `make_chinese_names_from_US_census.R`: code to extract Chinese prefix-name data from the 2010 US Census
 - `make_vietnamese_names_from_US_census.R`: code to extract Vietnamese prefix-name data from the 2010 US Census
+- `supp_transcription.R`: code to compare the entropy calculated from the original data (containing name and spelling variations) with that from the pre-processed data (no such variations). See more details in Table 5 in Appendix A.1.1.s
 
 ### Data
 This folder contains the data in our analysis.
