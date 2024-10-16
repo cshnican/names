@@ -15,8 +15,8 @@ Note: as mentioned in the paper, we call the element in a personal that goes fir
 To reproduce all the main figures, download `finnish_data_selected.csv` from [here](https://drive.google.com/file/d/12peW30OdjllRnHIp3N5-hMDXJlEn59G8/view?usp=sharing), put the file inside the `Data` folder. Run `prediction1.R`, `top3_english.R`, `prediction2.R`, `prediction3.R` first, and then run `plot_merged_figs.R`. 
 
 A description of the scripts:
-- `prediction1.R`: code for the first analysis, generating Figure 6 and all the subplots in Figure 5 
-- `prediction2.R`: code for the second analysis, generating Figure 3
+- `prediction1.R`: code for the first analysis, generating Figure 5
+- `prediction2.R`: code for the second analysis, generating Figure 3, Figure 6 and Figure 7
 - `prediction3.R`: code for the third analysis
 - `plot_merged_figs.R`: code to generate multi-panel figures (Figure 2 and Figure 4)
 - `byname_analysis.R`: code to generate Figure 4a
@@ -107,14 +107,7 @@ The main file is `figure4.pdf`
 - `number_of_neighbors.pdf`: Figure 4d
 
 #### Figure 5
-Figure 5 is assembled in LaTeX from the following files:
-- `pairwise_California (1910-2010).pdf`
-- `pairwise_Chinese-American (2010 Census).pdf`
-- `pairwise_Korea (2015 Census).pdf`
-- `pairwise_Northern England (1701-1800).pdf`
-- `pairwise_Scottish (1700-1800).pdf`
-- `pairwise_Taiwan (2018 Census).pdf`
-- `pairwise_Vietnamese-American (2010 Census).pdf`
+The main file is `figure5.pdf`
 
 #### Figure 6
 The main file is `figure6.pdf`

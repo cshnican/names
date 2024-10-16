@@ -8,6 +8,7 @@ library(xtable)
 library(lmerTest)
 library(brms)
 library(ggpubr)
+library(ggplot2)
 
 # to run this part, we need data from the original Finnish source
 
@@ -142,7 +143,7 @@ p2
 
 
 
-# first name entropy
+# first name entropy (one sample)
 first.ent = group_by(s, child_first_nameN, parish_id, birth_year_cut, lon, lat) %>%
   summarise(freq = n()/samp_num) %>%
   group_by(parish_id, birth_year_cut, lon, lat) %>%
@@ -216,7 +217,7 @@ summary(lm(first.last$scale.pat ~  first.last$scale.first.ent))
 
   
 
-select(first.last, scale.pat, lon, scale.first.ent, birth_year_cut) %>%
+dplyr::select(first.last, scale.pat, lon, scale.first.ent, birth_year_cut) %>%
   na.omit() %>%
   group_by(birth_year_cut) %>%
   summarise(`Corr: Patronyms:FirstNameEnt`=cor(scale.pat, scale.first.ent, method="spearman"),
@@ -224,24 +225,105 @@ select(first.last, scale.pat, lon, scale.first.ent, birth_year_cut) %>%
             `Corr: FirstNameEnt:Longitude` = cor(scale.first.ent, lon, method="spearman")) %>%
   xtable()
 
-select(first.last, scale.pat, lon, birth_year_cut) %>%
+dplyr::select(first.last, scale.pat, lon, birth_year_cut) %>%
   na.omit() %>%
   group_by(birth_year_cut) %>%
   summarise(cor=cor(scale.pat, lon, method="spearman")) %>%
   xtable()
 
 
-select(first.last, scale.first.ent, lon, birth_year_cut) %>%
+dplyr::select(first.last, scale.first.ent, lon, birth_year_cut) %>%
   na.omit() %>%
   group_by(birth_year_cut) %>%
   summarise(cor=cor(scale.first.ent, lon, method="spearman")) %>%
   xtable()
 
 
+# repeat the analysis 500 times
+bootstrap_analysis <- function(n_repetitions=500, samp_num = 50, filename = 'imgs/bootstrap.pdf'){
+  set.seed(420)
+  n_repetitions <- 500
+  
+  corrs <- tibble()
+  lmers <- tibble()
+  
+  
+  for (i in 1:n_repetitions){
+    # sample in groups of 50
+    samp_num = 50
+    sample.temp = group_by(d, parish_id, birth_year_cut) %>%
+      mutate(count = n()) %>%
+      filter(count >= samp_num) %>%
+      sample_n(samp_num)
+    
+    first.ent.temp = group_by(sample.temp, child_first_nameN, parish_id, birth_year_cut, lon, lat) %>%
+      summarise(freq = n()/samp_num) %>%
+      group_by(parish_id, birth_year_cut, lon, lat) %>%
+      summarise(first.ent = -sum(freq*log2(freq)),
+                n=n()) %>%
+      ungroup() %>%
+      mutate(first.ent.normalize = scale(first.ent)[, 1],
+             birthyearnum = as.numeric(as.factor(birth_year_cut)))
+    
+    first.last.temp <- has.last.parishes %>% left_join(first.ent.temp) %>%
+      mutate(pat.normalize = scale(`Proportion with hereditry patronym`)[,1]) %>%
+      dplyr::select(pat.normalize, lon, first.ent.normalize, birth_year_cut) %>%
+      na.omit() %>%
+      group_by(birth_year_cut) %>%
+      summarise(`Patronyms:FirstNameEnt`=cor(pat.normalize, first.ent.normalize, method="spearman"),
+                `Patronyms:Longitude` = cor(pat.normalize, lon, method="spearman"),
+                `FirstNameEnt:Longitude` = cor(first.ent.normalize, lon, method="spearman")) %>%
+      pivot_longer(cols = -birth_year_cut, names_to = 'corr', values_to = 'values') %>%
+      mutate(sample_number= i)
+    
+    
+    l_temp = lmer(data=first.ent.temp, 
+                  first.ent ~ birthyearnum * lon + (birthyearnum | parish_id),
+                  REML= F)
+    l0_temp = lmer(data=first.ent.temp, 
+                   first.ent ~ birthyearnum + lon + (birthyearnum | parish_id),
+                   REML=F)
+    
+    anova_temp <- anova(l_temp, l0_temp)
+    summary_temp <- summary(l_temp)
+    
+    lmer_temp <- tibble(
+      sample_number = i,
+      category = c('slope estimate', 'p_value', 'slope estimate', 'p_value', 'slope estimate', 'p_value', 'p_value'), 
+      item = c('r_birthyearnum', 'p_birthyearnum', 'r_lon', 'p_lon', 'r_birthyearnum:lon', 'p_birthyearnum:lon', 'p_anova'),
+      values = c(
+        summary_temp$coefficients[2,1], summary_temp$coefficients[2,5], summary_temp$coefficients[3,1], summary_temp$coefficients[3,5],
+        summary_temp$coefficients[4,1], summary_temp$coefficients[4,5], anova_temp$`Pr(>Chisq)`[2] 
+      )
+      
+    )
+    
+    corrs <- rbind(corrs, first.last.temp)
+    lmers <- rbind(lmers, lmer_temp)
+  }
+  
+  
+  p_corrs <- ggplot(corrs, aes(x=values)) +
+    facet_grid(cols=vars(birth_year_cut), rows=vars(corr), scales = 'free_y') +
+    geom_histogram(aes(y=after_stat(density)), fill='#002f6c') +
+    geom_density(alpha=0.6) +
+    geom_vline(xintercept = 0, linetype = 'dashed', alpha=0.5) +
+    theme_bw(10)
+  
+  p_lmers <- ggplot(lmers, aes(x=values)) +
+    facet_wrap(~item, axes='all', axis.labels='all', scales='free') +
+    geom_histogram(aes(y=after_stat(density)), fill='#002f6c') +
+    geom_density(alpha=0.6) +
+    theme_bw(10)
+  
+  pdf(filename, height=12, width=10)
+  ggarrange(p_lmers, p_corrs, ncol=1, labels=c('a)', 'b)'))
+  dev.off()
+}
 
 
-
-
+bootstrap_analysis(500, 50, 'imgs/figure6.pdf')
+bootstrap_analysis(500, 100, 'imgs/figure7.pdf')
 
 
 

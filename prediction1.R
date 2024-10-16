@@ -231,14 +231,14 @@ d.g3 = left_join(d.g, d.g2)
 d.g3 = mutate(d.g3, value = log10(value),
               value2=log10(value2))
 
-pdf("imgs/figure6.pdf", width=7, height=8)
-ggplot(d.g3, aes(x=value, y=value2)) + geom_point() + 
-  theme_bw(12) + 
-  #geom_smooth(method=lm, se=F) + 
-  scale_x_log10() + scale_y_log10() + 
-  facet_grid(variable ~ variable2, scales = "free") +
-  xlab("Log frequency") + ylab("Log frequency") 
-dev.off()
+# pdf("imgs/figure6.pdf", width=7, height=8)
+# ggplot(d.g3, aes(x=value, y=value2)) + geom_point() + 
+#   theme_bw(12) + 
+#   #geom_smooth(method=lm, se=F) + 
+#   scale_x_log10() + scale_y_log10() + 
+#   facet_grid(variable ~ variable2, scales = "free") +
+#   xlab("Log frequency") + ylab("Log frequency") 
+# dev.off()
 
 # ggsave("imgs/scottish_pairwise.png", width=7, height=8)
 ###################################################
