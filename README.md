@@ -29,6 +29,11 @@ A description of the scripts:
 ### Data
 This folder contains the data in our analysis.
 
+### Data availability statement
+The American, Korean, and Taiwanese name census data, as well as the birth records of parishes in Scotland and northern England, have been deposited in Github (github.com/cshnican/names) and Zenodo (https://zenodo.org/doi/10.5281/zenodo.13755110). 
+The Finnish birth records are not available on Github or Zenodo due to size constraint. Access can be obtained via Google Drive (https://drive.google.com/file/d/11LBQBwmGqxEQUy-tW5X_clwXZLGla7Un/view?usp=sharing).
+The scientist name data is not available due to data privacy concerns but can be accessed on request.
+
 #### American
 - `US_census_all`: US baby name data, a dataset published by the Social Security Administration (SSA). The dataset is downloaded from [here](https://www.ssa.gov/oact/babynames/limits.html) (see `State-specific data`). The dataset was made available by the SSA for the express use of "researchers interested in naming trends" ([see their statement](https://www.ssa.gov/oact/babynames/limits.html)).
     - `AK.txt`, ..., `WY.txt`: the data in each state and DC
