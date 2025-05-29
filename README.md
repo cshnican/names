@@ -6,6 +6,7 @@ Michael Ramscar, Sihan Chen, Richard Futrell, Kyle Mahowald
 <img src="imgs/proportion_relative_to_top.png" alt="Figure 2A" width="600"/>
 
 
+
 This Github repository contains the data, the analysis script, and the figures in the paper.
 
 ## A description of the repository content
@@ -73,9 +74,9 @@ The scientist name data is not available due to data privacy concerns but can be
 - `Vietnam (US 2010)`: containing the file `vietnamese_american_data.csv`, a subset of Vietnamese-American bynames pulled from the US 2010 Census
 
 #### Finnish
-- `finnish_data_selected.csv`: Finnish birth records from 1700 to 1917. Since the file size exceeds Github's limit, we moved it to Google Drive, and it can be downloaded [here](https://drive.google.com/file/d/11LBQBwmGqxEQUy-tW5X_clwXZLGla7Un/view?usp=sharing). This data was made available by Eric Malmi and was built for Malmi et al. (2018) off the HisKi Finnish genealogical data set. This data set was gathered and cleaned, as described in Malmi et al. (2018). [link to Malmi et al., (2018)](https://arxiv.org/abs/1802.06055). We focused in particular on birth name data and for all names used standardized spellings as in Malmi et al. (2018). According to Malmi (private communication), permission was given to Malmi and other researchers to use the HisKi dataset. There are other papers that use the HisKi database (e.g. [this](https://read.dukeupress.edu/demography/article/57/3/1171/168022)) or Malmi's database (e.g. [this](https://users.cecs.anu.edu.au/~Peter.Christen/publications/kirielle2019geocoding.pdf)). 
-- `sukunimitilasto-2023-08-01-dvv.csv`, `sukunimitilasto-2023-08-01-dvv.xlsx`: Finnish byname data in 2023, downloaded from the Population Information System [link](https://www.avoindata.fi/data/fi/dataset/none/resource/957d19a5-b87a-4c4d-8595-49c22d9d3c58?inner_span=True) (Notice: at the time of the analysis, the latest version was 2023-08-01. The dataset may have been updated now.). The dataset is made available under a Creative Commons 4.0 License. 
-- `etunimitilasto-2023-08-01-dvv.csv`, `etunimitilasto-2023-08-01-dvv.xlsx`: Finnish prefix-name data in 2023, downloaded from the Population Information System [link](https://www.avoindata.fi/data/fi/dataset/none/resource/08c89936-a230-42e9-a9fc-288632e234f5) (Notice: at the time of the analysis, the latest version was 2023-08-01. The dataset may have been updated now.). The dataset is made available under a Creative Commons 4.0 License. 
+- `finnish_data_selected.csv`: Finnish birth records from 1700 to 1917. This data was made available by Eric Malmi and was built for Malmi et al. (2018) off the HisKi Finnish genealogical data set. This data set was gathered and cleaned, as described in Malmi et al. (2018). [link to Malmi et al., (2018)](https://arxiv.org/abs/1802.06055). We focused in particular on birth name data and for all names used standardized spellings as in Malmi et al. (2018). According to Malmi (private communication), permission was given to Malmi and other researchers to use the HisKi dataset. There are other papers that use the HisKi database (e.g. [this](https://read.dukeupress.edu/demography/article/57/3/1171/168022)) or Malmi's database (e.g. [this](https://users.cecs.anu.edu.au/~Peter.Christen/publications/kirielle2019geocoding.pdf)). 
+- `sukunimitilasto-2023-08-01-dvv.csv`, `sukunimitilasto-2023-08-01-dvv.xlsx`: Finnish byname data in 2023, downloaded from the Population Information System [link](https://www.opendata.fi/data/fi/dataset/none?) (Notice: at the time of the analysis, the latest version was 2023-08-01. The dataset may have been updated now.). The dataset is made available under a Creative Commons 4.0 License. 
+- `etunimitilasto-2023-08-01-dvv.csv`, `etunimitilasto-2023-08-01-dvv.xlsx`: Finnish prefix-name data in 2023, downloaded from the Population Information System [link](https://www.opendata.fi/data/fi/dataset/none?) (Notice: at the time of the analysis, the latest version was 2023-08-01. The dataset may have been updated now.). The dataset is made available under a Creative Commons 4.0 License. 
 
 
 #### Scientist names

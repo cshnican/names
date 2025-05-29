@@ -1,6 +1,8 @@
 library(tidyverse)
 library(ggplot2)
 
+
+# bynames
 #source: https://www.avoindata.fi/data/fi/dataset/none/resource/957d19a5-b87a-4c4d-8595-49c22d9d3c58
 finland <- read.csv('Data/sukunimitilasto-2023-08-01-dvv.csv')
 
@@ -13,56 +15,36 @@ us <- read.csv('Data/us_census_name_2010/surnames_appearing_more_than_100_times/
 taiwan <- read.csv('Data/Chinese_name_data/taiwan_givenname.csv') %>% mutate(number = as.numeric(number))
 
 populations <- tibble(
-  society = c('finland', 'usa', 'taiwan'),
+  society = c('Finland', 'USA', 'Taiwan'),
   year = c(2023, 2010, 2018),
-  population_total = c(5545475, 309327143, 23726185) 
+  population_total = c(5583911, 308745538, 23659305) 
   # source: The World Bank + The United Nations
 )
 
-n=200
-topn = 1:n
-
-top50 <- tibble(
-  rank = topn,
-  finland = finland$Yhteensä[topn]/finland$Yhteensä[1],
-  us = rev(sort(us$count_nonapi))[topn]/rev(sort(us$count_nonapi))[1],
-  taiwan = taiwan$number[topn]/taiwan$number[1]
-)
-
-ggplot(top50 %>% pivot_longer(cols=-rank, names_to = 'society', values_to = "portion relative to the top"), 
-       aes(x=rank, y=`portion relative to the top`, color=society, group=society)) +
-  geom_point() +
-  geom_line() +
-  theme_bw(15) +
-  theme(panel.grid = element_blank()) +
-  ylim(0,1)
 
 finland_entropy <- finland %>%
-  #head(50) %>%
   mutate(society = 'Finland',
          total = sum(Yhteensä),
          freq = Yhteensä/total) %>%
   group_by(society) %>%
-  summarize(entropy = sum(-freq*log2(freq)),
-            total = sum(Yhteensä))
+  summarize(entropy_byname = sum(-freq*log2(freq)),
+            total_byname = sum(Yhteensä))
 
 us_entropy <- us %>%
-  #head(50) %>%
   mutate(society = 'USA',
          total = sum(count_nonapi),
          freq = count_nonapi/total) %>%
   group_by(society) %>%
-  summarize(entropy = sum(-freq*log2(freq)),
-            total = sum(count_nonapi))
+  summarize(entropy_byname = sum(-freq*log2(freq)),
+            total_byname = sum(count_nonapi))
 
 taiwan_entropy <- taiwan %>%
-  #head(n) %>%
   mutate(society = 'Taiwan',
          total = sum(number),
          freq = number/total) %>%
   group_by(society) %>%
-  summarize(entropy = sum(-freq*log2(freq)),
-            total = sum(number))
+  summarize(entropy_byname = sum(-freq*log2(freq)),
+            total_byname = sum(number))
 
 
 # prefix-names
@@ -80,8 +62,8 @@ read_files <- function(filename){
   return(d)
 }
 
-us_pn_post1910 <- lapply(us_states, read_files) %>% bind_rows() %>%
-  filter(year > 1910)
+us_pn_post1930 <- lapply(us_states, read_files) %>% bind_rows() %>%
+  filter(year > 1930)
 
 taiwan_pn_entropy <- taiwan_pn %>%
   mutate(society = 'Taiwan',
@@ -99,7 +81,7 @@ finland_pn_entropy <- fins_pn %>%
   summarize(entropy_prefix = sum(-freq*log2(freq)),
             total_prefix = sum(Lukumäärä))
 
-us_pn_entropy <- us_pn_post1910 %>%
+us_pn_entropy <- us_pn_post1930 %>%
   mutate(society='USA',
          total = sum(frequency)) %>%
   group_by(society, name) %>%
@@ -110,24 +92,29 @@ us_pn_entropy <- us_pn_post1910 %>%
   summarize(entropy_prefix = sum(-freq*log2(freq)),
             total_prefix = sum(number))
 
+# combining them together
 
 entropy = rbind(finland_entropy, us_entropy, taiwan_entropy) %>%
   left_join(populations, by='society') %>% 
-  mutate(percent_population = total/population_total) %>% 
+  mutate(percent_population_byname = total_byname/population_total) %>% 
   left_join(us_pn_entropy %>% rbind(
     finland_pn_entropy, taiwan_pn_entropy 
   ), by='society') %>%
-  mutate(percent_population_prefix = total_prefix/population_total,
-         entropy_byname = entropy) %>%
-  select(-entropy) %>%
-  pivot_longer(cols=c(entropy_byname, entropy_prefix), names_to = 'entropy_type', values_to = 'entropy')
+  mutate(percent_population_prefix = total_prefix/population_total) %>%
+  pivot_longer(cols=c(entropy_byname, entropy_prefix), names_to = 'entropy_type', values_to = 'entropy') %>%
+  rowwise() %>%
+  mutate(entropy_upperbound = case_when(
+    entropy_type == 'entropy_byname' ~ entropy + log2(population_total) - total_byname/population_total*log2(total_byname),
+    entropy_type == 'entropy_prefix' ~ entropy + log2(population_total) - total_prefix/population_total*log2(total_prefix)
+  ))
 
 plot_prefix_name_vs_byname <- ggplot(entropy %>% 
          mutate(
            category = ifelse(entropy_type == 'entropy_prefix', 'prefix name entropy', 'byname entropy'),
            category =factor(category, levels=c('prefix name entropy', 'byname entropy'))), 
        aes(x=society, y=entropy, alpha = category)) +
-  geom_col(position='dodge') +
+  geom_col(position='dodge', width=0.5) +
+  geom_errorbar(aes(ymax = entropy_upperbound, ymin=entropy), position='dodge', width=0.5) +
   theme_classic(18) +
   scale_alpha_discrete(range = c(0.5, 1))
 

@@ -82,7 +82,7 @@ d.dupe.helper = left_join(dupe.helper, d.dupe) %>%
          has.init = ifelse(grepl("Init", variable), "Initals", "No initials"))
 
 p1 = ggplot(d.dupe.helper, aes(x=CountryImproved, y=value, alpha=IsClear, group=variable)) + geom_bar(stat='identity', position=position_dodge()) +
-  theme_classic(10) +
+  theme_classic(18) +
   theme(axis.text.x = element_text(angle = 90),
         legend.position = "none")  +
   coord_flip() +
@@ -168,7 +168,7 @@ p2 = ggplot(d.ents, aes(x=given.surname.init.ent, y=given.init.surname.ent, labe
   ylim(7, 8.8) +
   xlab("flexible given name + fixed inherited initial entropy\n(Charles D. / Xiaoping L.)") + 
   ylab("flexible given name initial + fixed inherited name entropy\n(C. Darwin / X. Li)")+
-  theme_bw(14) 
+  theme_bw(18) 
 
 pdf("imgs/double_scinames.pdf", width=15, height=6)
 grid.arrange(p1, p2, ncol=2)
@@ -366,20 +366,37 @@ group_by(neighs, mode) %>%
   mutate(m=max(neigh)) %>%
   filter(neigh == m) %>%
   data.frame()
+# 
+# p3 <- ggplot(neighbors.per.1000, aes(x=mode, y=mean.neighbors.per.1000, alpha=as.factor(type))) +
+#     geom_col() +
+#     facet_wrap(~country, scales='free_x', ncol = 3) +
+#     theme_classic(18) +
+#     theme(#axis.text.x = element_text(angle=90),
+#       panel.grid = element_blank(),
+#       legend.title = element_blank(),
+#       legend.position = 'bottom') +
+#     # scale_fill_manual(
+#     #   values=c('navy', 'orange') 
+#     # ) +
+#     scale_alpha_discrete(range=c(.5, 1)) + 
+#     ylab('Mean number of neighbors per 1000') 
 
-p3 <- ggplot(neighbors.per.1000, aes(x=mode, y=mean.neighbors.per.1000, alpha=as.factor(type))) +
-    geom_col() +
-    facet_wrap(~country, scales='free_x', ncol = 3) +
-    theme_classic(18) +
-    theme(#axis.text.x = element_text(angle=90),
-      panel.grid = element_blank(),
-      legend.title = element_blank(),
-      legend.position = 'bottom') +
-    # scale_fill_manual(
-    #   values=c('navy', 'orange') 
-    # ) +
-    scale_alpha_discrete(range=c(.5, 1)) + 
-    ylab('Mean number of neighbors per 1000') 
+p3 <- ggplot(neighs %>% mutate(mode = factor(mode, levels = c(
+  "X. Li", "Xiaoping L.", "E. Saarinen", "Eero S.", "M. Curie", "Marie C.", "S. Kim", "S. Y. Kim", "Sang Yong K.", "A. Kolmogorov","A. N. Kolmogorov", "Andrey Nikolaevich K.", "Andrey K.",
+  "J. Smith", "Jamal S.")),
+  country = ifelse(country == 'us', 'US', str_to_title(country))
+), aes(x=mode, y=neigh/425*1000, alpha = as.factor(type))) +
+  stat_summary(geom='col', fun='mean', alpha=0.8) +
+  geom_point(alpha=0.2) +
+  facet_wrap(~country, scales='free_x', ncol = 3) +
+  theme_classic(18) +
+  theme(#axis.text.x = element_text(angle=90),
+    panel.grid = element_blank(),
+    legend.title = element_blank(),
+    legend.position = 'bottom') +
+  scale_alpha_discrete(range=c(.5, 1)) +
+  ylab('Mean number of neighbors per 1000') 
+  
 
 
 pdf('imgs/number_of_neighbors.pdf', width=14, height=8)

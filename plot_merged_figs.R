@@ -1,6 +1,7 @@
 library(gridExtra)
 library(ggplot2)
 library(ggpubr)
+library(purrr)
 
 # generating Figure 2 in the main paper, which is a combination of figures from different files
 load('Data/fig_proportion_relative_to_top.RData')

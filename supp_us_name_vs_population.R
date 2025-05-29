@@ -24,19 +24,6 @@ name_data <- name_data_raw %>%
 
 decade_cutoffs <- seq(1910, 2018, 10)
 
-# cumulative name entropy by decades
-# name_data_cumulative <- name_data_raw %>% 
-#   mutate(decade = floor(year/10) * 10) %>% 
-#   group_by(state, name, decade) %>%
-#   summarize(frequency_decade = sum(frequency)) %>% ungroup() %>%
-#   group_by(state, decade) %>% 
-#   mutate(total = sum(frequency_decade),
-#          p_name = frequency_decade/total) %>%
-#   summarize(entropy = -sum(p_name * log(p_name)),
-#             perplexity = 2^entropy) %>% ungroup() %>%
-#   group_by(state) %>% mutate(entropy_rel_max = entropy/max(entropy),
-#                              perplexity_rel_max = perplexity/max(perplexity)) %>% ungroup()
-# 
 name_data_cumulative <- tibble()
 
 for (decade in decade_cutoffs){
@@ -51,7 +38,6 @@ for (decade in decade_cutoffs){
     select(cumulative_year, state, entropy, perplexity)
 
   name_data_cumulative <- name_data_cumulative %>% rbind(name_data_sub)
-  #name_data_cumulative <- append(name_data_cumulative, name_data_sub)
 }
 
 name_data_cumulative <- name_data_cumulative %>% group_by(state) %>%
@@ -80,7 +66,6 @@ ggplot(name_data %>% mutate(state=factor(state, levels=population_rank)),
   theme(strip.background = element_blank(),
         panel.grid = element_blank()) +
   ylab('normalized population (red) / perplexity (blue)') 
-  #ggtitle('by-year name entropy')
 dev.off()
 
 ggplot(name_data_cumulative %>% mutate(state=factor(state, levels=population_rank)) %>%

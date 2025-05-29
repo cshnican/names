@@ -1,6 +1,6 @@
 library(tidyverse)
 library("ggmap")
-library(maptools)
+#library(maptools)
 library(maps)
 library(lme4)
 require(gridExtra)
@@ -9,6 +9,7 @@ library(lmerTest)
 library(brms)
 library(ggpubr)
 library(ggplot2)
+library(psych)
 
 # to run this part, we need data from the original Finnish source
 
@@ -62,7 +63,7 @@ has.last.parishes = d %>%
   group_by(parish_id, lon, lat, birth_year_cut) %>%
   summarise(mean.hasLast = mean(hasLast, na.rm=T)) %>%
   ungroup() %>%
-  mutate(`Proportion with hereditry patronym` = mean.hasLast,
+  mutate(`Proportion with hereditary patronym` = mean.hasLast,
   ) #scale(mean.hasLast)[, 1])
 
 summary(lm(data=filter(has.last.parishes, birth_year_cut == "up to 1730"),
@@ -119,7 +120,7 @@ p2 = ggplot(has.last.parishes %>%
                                                       '1780-1830',
                                                       '1830-1880',
                                                       'post-1880'))), 
-            aes(x=lon, y=lat, colour=`Proportion with hereditry patronym`)) + 
+            aes(x=lon, y=lat, colour=`Proportion with hereditary patronym`)) + 
   borders(regions = "Finland", colour = "gray50", fill = "gray50") +
   geom_point() + 
   geom_segment(aes(x=mean_lon, y=mean_lat, xend=mean_lon, yend=mean_lat), arrow=arrow(length=unit(0.25, 'cm')), color='white') +
@@ -175,9 +176,9 @@ p1 = ggplot(first.ent.early, aes(x=lon, y=lat, colour=first.ent)) +
   labs(colour="Prefix-name entropy") +
   theme(legend.position="bottom")
 
-pdf("imgs/first_name_ent.pdf", width=7, height=4)
+#pdf("imgs/first_name_ent.pdf", width=7, height=4)
 p1
-dev.off()
+#dev.off()
 #ggsave("imgs/first_name_ent.png", width=7, height=4)  
 
 summary(lm(data=first.ent.early, first.ent ~ lon))
@@ -194,15 +195,15 @@ l0 = lmer(data=first.ent.early,
 anova(l, l0)
 summary(l)
 
-pdf('imgs/figure3.pdf', width=7, height=8)
+#pdf('imgs/figure3.pdf', width=7, height=8)
 ggarrange(p2, p1, ncol=1, labels=c('a)', 'b)'))
-dev.off()
+#dev.off()
 
 
 # compare parishes lat name pct with first name ent
 first.last = left_join(has.last.parishes, first.ent.early)
 first.last$scale.first.ent = scale(first.last$first.ent)[, 1]
-first.last$scale.pat = scale(first.last$`Proportion with hereditry patronym`)[, 1]
+first.last$scale.pat = scale(first.last$`Proportion with hereditary patronym`)[, 1]
 
 ggplot(first.last, aes(x=`scale.pat`, y=scale.first.ent)) +
   geom_point() + 
@@ -217,25 +218,25 @@ summary(lm(first.last$scale.pat ~  first.last$scale.first.ent))
 
   
 
+#Table 3 (reformatted)
 dplyr::select(first.last, scale.pat, lon, scale.first.ent, birth_year_cut) %>%
   na.omit() %>%
   group_by(birth_year_cut) %>%
-  summarise(`Corr: Patronyms:FirstNameEnt`=cor(scale.pat, scale.first.ent, method="spearman"),
+  summarize(`Corr: Patronyms:FirstNameEnt`=cor(scale.pat, scale.first.ent, method="spearman"),
+            `p: Patronyms:FirstNameEnt` = cor.test(scale.pat, scale.first.ent, method="spearman", exact=FALSE)$p.value,
             `Corr: Patronyms:Longitude` = cor(scale.pat, lon, method="spearman"),
-            `Corr: FirstNameEnt:Longitude` = cor(scale.first.ent, lon, method="spearman")) %>%
+            `p: Patronyms:Longitude` = cor.test(scale.pat, lon, method="spearman", exact=FALSE)$p.value,
+            `Corr: FirstNameEnt:Longitude` = cor(scale.first.ent, lon, method="spearman"),
+            `p: FirstNameEnt:Longitude` = cor.test(scale.first.ent, lon, method="spearman", exact=FALSE)$p.value
+            ) %>%
   xtable()
+
+
 
 dplyr::select(first.last, scale.pat, lon, birth_year_cut) %>%
   na.omit() %>%
   group_by(birth_year_cut) %>%
   summarise(cor=cor(scale.pat, lon, method="spearman")) %>%
-  xtable()
-
-
-dplyr::select(first.last, scale.first.ent, lon, birth_year_cut) %>%
-  na.omit() %>%
-  group_by(birth_year_cut) %>%
-  summarise(cor=cor(scale.first.ent, lon, method="spearman")) %>%
   xtable()
 
 
@@ -266,7 +267,7 @@ bootstrap_analysis <- function(n_repetitions=500, samp_num = 50, filename = 'img
              birthyearnum = as.numeric(as.factor(birth_year_cut)))
     
     first.last.temp <- has.last.parishes %>% left_join(first.ent.temp) %>%
-      mutate(pat.normalize = scale(`Proportion with hereditry patronym`)[,1]) %>%
+      mutate(pat.normalize = scale(`Proportion with hereditary patronym`)[,1]) %>%
       dplyr::select(pat.normalize, lon, first.ent.normalize, birth_year_cut) %>%
       na.omit() %>%
       group_by(birth_year_cut) %>%
@@ -321,9 +322,10 @@ bootstrap_analysis <- function(n_repetitions=500, samp_num = 50, filename = 'img
   dev.off()
 }
 
+bootstrap_analysis(10, 50, 'imgs/test.pdf')
 
-bootstrap_analysis(500, 50, 'imgs/figure6.pdf')
-bootstrap_analysis(500, 100, 'imgs/figure7.pdf')
+#bootstrap_analysis(500, 50, 'imgs/figure6.pdf')
+#bootstrap_analysis(500, 100, 'imgs/figure7.pdf')
 
 
 
