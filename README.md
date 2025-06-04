@@ -32,7 +32,7 @@ This folder contains the data in our analysis.
 
 ### Data availability statement
 The American, Korean, and Taiwanese name census data, as well as the birth records of parishes in Scotland and northern England, have been deposited in Github (github.com/cshnican/names) and Zenodo (https://zenodo.org/doi/10.5281/zenodo.13755110). 
-The Finnish birth records are not available on Github or Zenodo due to size constraint. Access can be obtained via Google Drive (https://drive.google.com/file/d/11LBQBwmGqxEQUy-tW5X_clwXZLGla7Un/view?usp=sharing).
+The Finnish birth records can be obtained from Malmi (2018) via [this link](https://arxiv.org/abs/1802.06055). A preprocessed dataset can be made available on request.
 The scientist name data is not available due to data privacy concerns but can be accessed on request.
 
 #### American
@@ -45,9 +45,7 @@ The scientist name data is not available due to data privacy concerns but can be
 - `us_population_change`: containing the file `population_change_data.csv`, a dataset containing the population census data in each state (plus DC and Puerto Rico) every 10 years. The dataset is downloaded from [here](https://www2.census.gov/programs-surveys/decennial/2020/data/apportionment/population-change-data-table.xlsx). The terms on their website expressly state that this data is made available for use in research ([see their statement](https://www.census.gov/data/developers/about/terms-of-service.html)).
 
 #### Chinese-American and Taiwanese
-- `Chinese (US 2010)`: containing the file `chinese_american_data.csv`, a subset of Chinese-American bynames pulled from the US 2010 Census.
 - `Chinese_name_data`: a folder containing the raw files related to Chinese names
-    - `chinese_surnames_400.csv`: a list of 400 most common prefix-names in Mainland China. The data is taken from [Wikipedia](https://en.wikipedia.org/wiki/List_of_common_Chinese_surnames#Surname_list). Wikipedia text is available for re-use under a CC-BY-SA license. ([original text](https://en.wikipedia.org/wiki/Wikipedia:Text_of_the_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License)) 
     - `taiwan_2018.csv`: a list of 500 most common Taiwanese prefix-names. The data is manually extracted from the 2018 population census conducted by the Taiwanese Ministry of Interior ([link](https://www.ris.gov.tw/documents/data/5/2/107namestat.pdf). See Table 57, pp.282-304). The Taiwanese government allows their published data to be freely used for noncommercial purposes ([see the statement here](https://data.gov.tw/license)).
     - `taiwan_givenname.csv`; a list of 100 most common Taiwanese men bynames and 100 most common Taiwanese women bynames. The data is manually extracted from the 2018 population census conducted by the Taiwanese Ministry of Interior ([link](https://www.ris.gov.tw/documents/data/5/2/107namestat.pdf). See Table 51, pp.264-265). The Taiwanese government allows their published data to be freely used for noncommercial purposes ([see the statement here](https://data.gov.tw/license)).
 
@@ -57,12 +55,13 @@ The scientist name data is not available due to data privacy concerns but can be
 
 #### England
 - `english-names-pop.csv`: the population of England between 1801 and 1901 and the portion of population having the 3 most popular prefix-names in each gender.
-    - the population data is taken from [populationdata.org.uk](populationdata.org.uk). Population Data UK is a site “dedicated to providing information about the population of the United Kingdom.” Our use of this data is in full compliance with the site’s stated terms.
+    - the population data is taken from [populationdata.org.uk](https://populationdata.org.uk). Population Data UK is a site “dedicated to providing information about the population of the United Kingdom.” Our use of this data is in full compliance with the site’s stated terms.
     - the prefix-name data is taken from Table 1 in Douglas A Galbi. ‘Long-term trends in personal given name frequencies in the UK’. Available at SSRN 366240 (2002). One purpose of such dataset, according to Galbi, is "to spur further analysis of given names". Our use of this data is in full compliance of this (See the original statement [here](https://www.galbithink.org/names/)).
 - `northern_england.csv`: names from two pre-modern English counties for the period between 1700 and 1800. Extracted from George Bell’s parish marriage register transcriptions for Northumberland and Durham between 1701 and 1800 [link](https://www.galbithink.org/names/ncumb.txt). This dataset, comprising obtained from public records, is made available explicitly and intended for academic use by Douglas Galbi. One purpose of such dataset, according to Galbi, is "to spur further analysis of given names". Our use of this data is in full compliance of this (See the original statement [here](https://www.galbithink.org/names/)).
 
 #### Scottish    
-- `Scotland`: prefix-names from four pre-modern Scottish parishes for the period between 1700-1800, extracted by Alice Crook (2012) from the National Records of Scotland (https://www.nrscotland.gov.uk/). This data is contained as an appendix of Crook's MPhil Thesis work [Crook, Alice Louise (2012) Personal naming patterns in Scotland, 1700 - 1800: a comparative study of the parishes of Beith, Dingwall, Earlston, and Govan. MPhil(R) thesis]. The thesis is publically available [here](https://theses.gla.ac.uk/4190/1/2012crookmphil.pdf)
+- `Scotland`: prefix-names from four pre-modern Scottish parishes for the period between 1700-1800, extracted by Alice Crook (2012) from the National Records of Scotland (https://www.nrscotland.gov.uk/). All contents in the National Records of Scotland operates are available under the Open Government License v3.0, which allows its data to be copied, published, distributed, and transmitted as long as the source is acknowledged [source](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/}.
+This data is contained as an appendix of Crook's MPhil Thesis work [Crook, Alice Louise (2012) Personal naming patterns in Scotland, 1700 - 1800: a comparative study of the parishes of Beith, Dingwall, Earlston, and Govan. MPhil(R) thesis]. The thesis is publically available [here](https://theses.gla.ac.uk/4190/1/2012crookmphil.pdf). 
     - `2012crookmphil.pdf`: a copy of Crook's thesis
     - `beith.csv`, `beith.xlsx`: prefix-name distribution in Beith
     - `dingwall.csv`, `dingwall.xlsx`: prefix-name distribution in Dingwall

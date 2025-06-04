@@ -322,8 +322,6 @@ bootstrap_analysis <- function(n_repetitions=500, samp_num = 50, filename = 'img
   dev.off()
 }
 
-bootstrap_analysis(10, 50, 'imgs/test.pdf')
-
 #bootstrap_analysis(500, 50, 'imgs/figure6.pdf')
 #bootstrap_analysis(500, 100, 'imgs/figure7.pdf')
 

@@ -1,22 +1,13 @@
 library(tidyverse)
 library(xtable)
 
-#korea = read_csv("Data/Korea/ korea.csv", col_names = NA)
 korea = read_csv('Data/Korea/korea_2015_hanja.csv') %>%
   filter(`성씨, 본관별`!='전국')
-# vietnam = read_csv("Data/Vietnam (US 2000)/viet usa 2000.csv")
 vietnamese_american = read_csv('Data/Vietnam (US 2010)/vietnamese_american_data.csv')
 vietnamese_american$asian.count = vietnamese_american$count * vietnamese_american$pctapi/100
 krank = rev(sort(korea$`2015`))
 vietrank = rev(sort(vietnamese_american$asian.count))
-#china_mainland_400 = read_csv('Data/Chinese_name_data/chinese_surnames_400.csv')
-chinese_american = read_csv('Data/Chinese (US 2010)/chinese_american_data.csv')
-chinese_american$asian.count = chinese_american$count * chinese_american$pctapi/100
-abcrank = rev(sort(chinese_american$asian.count))
 taiwan = read_csv('Data/Chinese_name_data/taiwan_2018.csv')
-#plot(krank, vietrank)
-#cor(krank, vietrank)
-#summary(lm(krank ~ vietrank))
 
 ###############################################
 beith = read_csv("Data/Scotland/beith.csv", col_names = NA)
@@ -67,16 +58,13 @@ all_us_1910_2010 <- lapply(us_states, read_files) %>% bind_rows() %>%
 ###################################################
 # summary data
 sum.d = tibble(region = c("Korea (2015 Census)", "Vietnamese-American (2010 Census)", 
-                          #"China Mainland", 
-                          "Chinese-American (2010 Census)", "Taiwan (2018 Census)",
+                          "Taiwan (2018 Census)",
                           "Beith (1700-1800)", "Govan (1700-1800)", "Dingwall (1700-1800)", "Earlstone (1700-1800)",
                           "Northern England (1701-1800)",
                           "Finland pre-1800", "Finland post-1900",
                           "Delaware (1910-2010)", "California (1910-2010)", "All USA (1910-2010)"),
               `name count` = c(length(unique(korea$`성씨, 본관별`)),
                                 length(unique(vietnamese_american$name)),
-                                #length(unique(china_mainland_400$prefix_name)),
-                                length(unique(chinese_american$name)),
                                 length(unique(taiwan$`Name`)),
                                 length(unique(beith$X1)),
                                 length(unique(govan$X1)),
@@ -92,8 +80,6 @@ sum.d = tibble(region = c("Korea (2015 Census)", "Vietnamese-American (2010 Cens
               ),
                `sample` = c(sum(korea$`2015`, na.rm=T),
                                 round(sum(vietnamese_american$asian.count, na.rm=T)),
-                                #sum(china_mainland_400$number*10000, na.rm=T),
-                                round(sum(chinese_american$asian.count, na.rm=T)),
                                 sum(taiwan$Number, na.rm=T),
                                 sum(beith$X4, na.rm=T),
                                 sum(govan$X4, na.rm=T),
@@ -106,8 +92,6 @@ sum.d = tibble(region = c("Korea (2015 Census)", "Vietnamese-American (2010 Cens
                                 sum(ca$n, na.rm=T),
                                 sum(all_us_1910_2010$freq, na.rm = T)),
               `cut-offs` = c(5,
-                             100,
-                             #80000,
                              100,
                              135,
                              1,
@@ -123,7 +107,6 @@ sum.d = tibble(region = c("Korea (2015 Census)", "Vietnamese-American (2010 Cens
               
               `population` = c(51069000, # Statistics Korea, Korean Census 2015, https://kostat.go.kr/board.es?mid=a20107020000&bid=11739&tag=&act=view&list_no=420178&ref_bid=&keyField=&keyWord=&nPage=1
                                1548449, # US Census Bureau, Vietnamese American population 2010, https://www.census.gov/content/dam/Census/library/publications/2012/dec/c2010br-11.pdf
-                               3347229, # US Census Bureau, Chinese American population 2010, https://www.census.gov/content/dam/Census/library/publications/2012/dec/c2010br-11.pdf
                                23572049, # Taiwan Dept of Household Registration, January 2018, https://www.ris.gov.tw/app/portal/346 
                                sum(beith$X4, na.rm=T), # since the cut-off is 1, the sample size is the true population
                                sum(govan$X4, na.rm=T),
@@ -166,8 +149,6 @@ range=nrow(all_us_1910_2010)
 
 
 d = tibble(`Korea (2015 Census)`=krank[1:range], `Vietnamese-American (2010 Census)`=vietrank[1:range],
-           #`China-Mainland` = china_mainland_400$number[1:range],
-           `Chinese-American (2010 Census)`=abcrank[1:range],
            `Taiwan (2018 Census)`=taiwan$Number[1:range],
            `Beith (1700-1800)`=beith$X4[1:range], `Dingwall (1700-1800)`=dingwall$X4[1:range], 
            `Govan (1700-1800)`=govan$X4[1:range], `Earlstone (1700-1800)`=earlstone$X4[1:range],
@@ -192,8 +173,6 @@ d.g = d %>%
                             "Scottish (1700-1800)",
                             "Korea (2015 Census)",
                             "Vietnamese-American (2010 Census)",
-                            #"China-Mainland",
-                            "Chinese-American (2010 Census)",
                             "Taiwan (2018 Census)",
                             "California (1910-2010)"
                          )) %>%
@@ -231,16 +210,6 @@ d.g3 = left_join(d.g, d.g2)
 d.g3 = mutate(d.g3, value = log10(value),
               value2=log10(value2))
 
-# pdf("imgs/figure6.pdf", width=7, height=8)
-# ggplot(d.g3, aes(x=value, y=value2)) + geom_point() + 
-#   theme_bw(12) + 
-#   #geom_smooth(method=lm, se=F) + 
-#   scale_x_log10() + scale_y_log10() + 
-#   facet_grid(variable ~ variable2, scales = "free") +
-#   xlab("Log frequency") + ylab("Log frequency") 
-# dev.off()
-
-# ggsave("imgs/scottish_pairwise.png", width=7, height=8)
 ###################################################
 
 
@@ -257,8 +226,7 @@ ag2 = ggplot(d.sum %>%
                  Locale = factor(Locale,
                                  levels = c("California (1910-2010)", "Delaware (1910-2010)", 
                                             "Vietnamese-American (2010 Census)", "Korea (2015 Census)",
-                                            #"China-Mainland", 
-                                            "Chinese-American (2010 Census)", "Taiwan (2018 Census)",
+                                            "Taiwan (2018 Census)",
                                             "Earlstone (1700-1800)", "Govan (1700-1800)", "Dingwall (1700-1800)", "Beith (1700-1800)",
                                             "Northern England (1701-1800)",
                                             "Finland pre-1800", "Finland post-1900"))
@@ -271,8 +239,6 @@ ag2 = ggplot(d.sum %>%
   theme_classic(18) + 
   scale_y_log10() +
   scale_colour_manual(values = c("Vietnamese-American (2010 Census)" =  "#003566", "Korea (2015 Census)" = "#4CC9F0",
-                                 #"China-Mainland" = "#134611", 
-                                 "Chinese-American (2010 Census)" = '#3DA35D',
                                  "Taiwan (2018 Census)" = "#96E072",
                                  "Earlstone (1700-1800)" = "orange", "Govan (1700-1800)" = "darkorange",
                                  "Dingwall (1700-1800)" = "sienna", "Beith (1700-1800)" = "#BF360C",
