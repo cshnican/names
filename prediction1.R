@@ -130,21 +130,7 @@ sum.d <- sum.d %>%
     `population` = sum(sum.d$`population`[sum.d$region %in% c('Dingwall (1700-1800)', 'Earlstone (1700-1800)', 'Govan (1700-1800)', 'Beith (1700-1800)')]),
     `cut-offs` = 1
   ))  
-# sum.d %>%
-#   mutate(sample = as.character(sample)) %>%
-#   xtable() %>%
-#   print(include.rownames=FALSE, digits=0) 
 
-# d = tibble(Korean=krank, `Vietnamese-American`=vietrank,
-#            `China-Mainland` = china_mainland_400$number[1:50],
-#            `Chinese-American`=abcrank,
-#            Taiwan=taiwan$Number[1:50],
-#            Beith=beith$X4[1:50], Dingwall=dingwall$X4[1:50], 
-#            Govan=govan$X4[1:50], Earlstone=earlstone$X4[1:50],
-#            CA=ca$n[1:50], DE= de$n[1:50],
-#            `Northern England` = nengland$X2[1:50],
-#            FinnsPost1900 = fins_post1900$name_count[1:50],
-#            FinnsPre1800 = fins_pre1800$name_count[1:50])
 range=nrow(all_us_1910_2010)
 
 
@@ -255,7 +241,7 @@ dev.off()
 
 
 save(ag2, file='Data/fig_proportion_relative_to_top.RData')
-ggsave("imgs/proportion_relative_to_top.png", width=8, height=4)
+ggsave("imgs/proportion_relative_to_top.png", plot=ag2, width=10, height=6)
 
 # get entropies
 ents = group_by(d.sum, Locale) %>%
