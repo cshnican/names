@@ -252,8 +252,10 @@ pdf('imgs/proportion_relative_to_top.pdf', width=10, height=6)
 ag2
 dev.off()
 
+
+
 save(ag2, file='Data/fig_proportion_relative_to_top.RData')
-  # ggsave("imgs/proportion_relative_to_top.png", width=8, height=4)
+ggsave("imgs/proportion_relative_to_top.png", width=8, height=4)
 
 # get entropies
 ents = group_by(d.sum, Locale) %>%

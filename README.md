@@ -44,7 +44,7 @@ The scientist name data is not available due to data privacy concerns but can be
     - the file used in this study is `./surnames_appearing_more_than_100_times/Names_2010Census.csv`.
 - `us_population_change`: containing the file `population_change_data.csv`, a dataset containing the population census data in each state (plus DC and Puerto Rico) every 10 years. The dataset is downloaded from [here](https://www2.census.gov/programs-surveys/decennial/2020/data/apportionment/population-change-data-table.xlsx). The terms on their website expressly state that this data is made available for use in research ([see their statement](https://www.census.gov/data/developers/about/terms-of-service.html)).
 
-#### Chinese-American and Taiwanese
+#### Taiwanese
 - `Chinese_name_data`: a folder containing the raw files related to Chinese names
     - `taiwan_2018.csv`: a list of 500 most common Taiwanese prefix-names. The data is manually extracted from the 2018 population census conducted by the Taiwanese Ministry of Interior ([link](https://www.ris.gov.tw/documents/data/5/2/107namestat.pdf). See Table 57, pp.282-304). The Taiwanese government allows their published data to be freely used for noncommercial purposes ([see the statement here](https://data.gov.tw/license)).
     - `taiwan_givenname.csv`; a list of 100 most common Taiwanese men bynames and 100 most common Taiwanese women bynames. The data is manually extracted from the 2018 population census conducted by the Taiwanese Ministry of Interior ([link](https://www.ris.gov.tw/documents/data/5/2/107namestat.pdf). See Table 51, pp.264-265). The Taiwanese government allows their published data to be freely used for noncommercial purposes ([see the statement here](https://data.gov.tw/license)).
