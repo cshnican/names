@@ -1,6 +1,5 @@
 library(tidyverse)
 library("ggmap")
-#library(maptools)
 library(maps)
 library(lme4)
 require(gridExtra)
@@ -10,26 +9,6 @@ library(brms)
 library(ggpubr)
 library(ggplot2)
 library(psych)
-
-# to run this part, we need data from the original Finnish source
-
-# d = read_csv("finnish_data/births.csv")
-# 
-# # Use Convert Lats Lons.ipynb to get the good lat lon
-# # convert using the genealogy repo from github.com/ekQ/genealogy.git
-# parishes = read_csv("finnish_data/parish_with_lat_lon.csv") %>%
-#   select(parish_id = id, name, lon=good_lon, lat=good_lat)
-# 
-# d = left_join(d, parishes) %>%
-#   filter(birth_year > 1000)
-# length(unique(d$parish_id))
-# 
-# d = select(d, birth_year, 
-#                   parish_id,
-#                   child_first_nameN,
-#                   dad_last_nameN,
-#            lon, lat)
-# write_csv(d, "data/finnish_data_selected.csv")
 
 d = read_csv("data/finnish_data_selected.csv")
 
@@ -64,7 +43,7 @@ has.last.parishes = d %>%
   summarise(mean.hasLast = mean(hasLast, na.rm=T)) %>%
   ungroup() %>%
   mutate(`Proportion with hereditary patronym` = mean.hasLast,
-  ) #scale(mean.hasLast)[, 1])
+  ) 
 
 summary(lm(data=filter(has.last.parishes, birth_year_cut == "up to 1730"),
            mean.hasLast ~ lon))  
@@ -176,10 +155,9 @@ p1 = ggplot(first.ent.early, aes(x=lon, y=lat, colour=first.ent)) +
   labs(colour="Prefix-name entropy") +
   theme(legend.position="bottom")
 
-#pdf("imgs/first_name_ent.pdf", width=7, height=4)
+
 p1
-#dev.off()
-#ggsave("imgs/first_name_ent.png", width=7, height=4)  
+
 
 summary(lm(data=first.ent.early, first.ent ~ lon))
 summary(lm(data=first.ent.early, first.ent ~ lat))
@@ -195,9 +173,9 @@ l0 = lmer(data=first.ent.early,
 anova(l, l0)
 summary(l)
 
-#pdf('imgs/figure3.pdf', width=7, height=8)
+pdf('imgs/figure3.pdf', width=7, height=8)
 ggarrange(p2, p1, ncol=1, labels=c('a)', 'b)'))
-#dev.off()
+dev.off()
 
 
 # compare parishes lat name pct with first name ent
@@ -243,15 +221,12 @@ dplyr::select(first.last, scale.pat, lon, birth_year_cut) %>%
 # repeat the analysis 500 times
 bootstrap_analysis <- function(n_repetitions=500, samp_num = 50, filename = 'imgs/bootstrap.pdf'){
   set.seed(420)
-  n_repetitions <- 500
-  
   corrs <- tibble()
   lmers <- tibble()
   
   
   for (i in 1:n_repetitions){
     # sample in groups of 50
-    samp_num = 50
     sample.temp = group_by(d, parish_id, birth_year_cut) %>%
       mutate(count = n()) %>%
       filter(count >= samp_num) %>%
@@ -317,13 +292,15 @@ bootstrap_analysis <- function(n_repetitions=500, samp_num = 50, filename = 'img
     geom_density(alpha=0.6) +
     theme_bw(10)
   
+  p <- ggarrange(p_lmers, p_corrs, ncol=1, labels=c('a)', 'b)'))
+  
   pdf(filename, height=12, width=10)
-  ggarrange(p_lmers, p_corrs, ncol=1, labels=c('a)', 'b)'))
+  print(p)
   dev.off()
 }
 
-#bootstrap_analysis(500, 50, 'imgs/figure6.pdf')
-#bootstrap_analysis(500, 100, 'imgs/figure7.pdf')
+bootstrap_analysis(500, 50, 'imgs/supp_fig1.pdf')
+bootstrap_analysis(500, 100, 'imgs/supp_fig2.pdf')
 
 
 

@@ -97,29 +97,10 @@ pdf('imgs/dupe_graph2.pdf', width=7, height=4)
 p1
 dev.off()
 
-#ggsave("imgs/dupe_graph2.png", width=7, height=4)
-
 
 maxdist = rep(1/max(table(d$country)), max(table(d$country)))
 maxent = -sum(maxdist * log2(maxdist))
 
-
-# korea.new = d %>% 
-#   filter(country == 'korea') %>%
-#   mutate(country = 'Korea-2',
-#          given.init.surname =  paste(toupper(substr(given, 1, 1)),
-#                                   toupper(substr(middle, 1, 1)),
-#                                   surname))
-# 
-# russia.pat <- d %>%
-#   filter(country == 'russia_patronyms') %>%
-#   mutate(country = 'Russia-2',
-#          given.init.surname=paste(toupper(substr(given, 1, 1)),
-#                                toupper(substr(patronym, 1, 1)),
-#                                surname)
-#          )
-
-# d.ent.base = bind_rows(d %>% filter(grepl("patr", country) == F), korea.new, russia.pat)
 
 d.ent.base = bind_rows(d %>% filter(grepl("patr", country) == F))
 
@@ -366,20 +347,28 @@ group_by(neighs, mode) %>%
   mutate(m=max(neigh)) %>%
   filter(neigh == m) %>%
   data.frame()
-# 
-# p3 <- ggplot(neighbors.per.1000, aes(x=mode, y=mean.neighbors.per.1000, alpha=as.factor(type))) +
-#     geom_col() +
-#     facet_wrap(~country, scales='free_x', ncol = 3) +
-#     theme_classic(18) +
-#     theme(#axis.text.x = element_text(angle=90),
-#       panel.grid = element_blank(),
-#       legend.title = element_blank(),
-#       legend.position = 'bottom') +
-#     # scale_fill_manual(
-#     #   values=c('navy', 'orange') 
-#     # ) +
-#     scale_alpha_discrete(range=c(.5, 1)) + 
-#     ylab('Mean number of neighbors per 1000') 
+
+# given init
+t.test(neighs$neigh[neighs$country %in% c('china', 'korea', 'korea-2') &
+                    neighs$type == 'given init.'], 
+       neighs$neigh[neighs$country %in% c('finland', 'france', 'us', 'russia', 'russia-2') &
+                    neighs$type == 'given init.'], var.equal = FALSE)$statistic
+
+t.test(neighs$neigh[neighs$country %in% c('china', 'korea', 'korea-2') &
+                      neighs$type == 'given init.'], 
+       neighs$neigh[neighs$country %in% c('finland', 'france', 'us', 'russia', 'russia-2') &
+                      neighs$type == 'given init.'], var.equal = FALSE)$p.value
+
+# inherited init
+t.test(neighs$neigh[neighs$country %in% c('china', 'korea', 'korea-2') &
+                      neighs$type == 'inherited init.'], 
+       neighs$neigh[neighs$country %in% c('finland', 'france', 'us', 'russia', 'russia-2') &
+                      neighs$type == 'inherited init.'], var.equal = FALSE)$statistic
+
+t.test(neighs$neigh[neighs$country %in% c('china', 'korea', 'korea-2') &
+                      neighs$type == 'inherited init.'], 
+       neighs$neigh[neighs$country %in% c('finland', 'france', 'us', 'russia', 'russia-2') &
+                      neighs$type == 'inherited init.'], var.equal = FALSE)$p.value
 
 p3 <- ggplot(neighs %>% mutate(mode = factor(mode, levels = c(
   "X. Li", "Xiaoping L.", "E. Saarinen", "Eero S.", "M. Curie", "Marie C.", "S. Kim", "S. Y. Kim", "Sang Yong K.", "A. Kolmogorov","A. N. Kolmogorov", "Andrey Nikolaevich K.", "Andrey K.",
@@ -387,6 +376,7 @@ p3 <- ggplot(neighs %>% mutate(mode = factor(mode, levels = c(
   country = ifelse(country == 'us', 'US', str_to_title(country))
 ), aes(x=mode, y=neigh/425*1000, alpha = as.factor(type))) +
   stat_summary(geom='col', fun='mean', alpha=0.8) +
+  stat_summary(geom='errorbar', fun.data='mean_cl_boot', alpha=0.8) +
   geom_point(alpha=0.2) +
   facet_wrap(~country, scales='free_x', ncol = 3) +
   theme_classic(18) +
@@ -403,11 +393,15 @@ pdf('imgs/number_of_neighbors.pdf', width=14, height=8)
 p3
 dev.off()
 
-pdf("imgs/triple_scinames.pdf", width=15, height=15)
-grid.arrange(p1, p2, p3, ncol=2, layout_matrix=cbind(c(1,3), c(2,3)))
+pdf("imgs/Figure4.pdf", width=15, height=16)
+ggarrange(
+  ggarrange(p1, p2, nrow=1, labels=c('a)', 'b)'), font.label = list(size=20)),
+  p3,
+  nrow=2,
+  labels=c('', 'c)'),
+  font.label = list(size=20)
+)
 dev.off()
-
-save(p1, p2, p3, file='Data/exp3plots.RData')
 
 # analyzing prefix-name and byname entropy
 

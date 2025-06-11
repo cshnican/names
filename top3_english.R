@@ -18,10 +18,5 @@ p_eng <- ggplot(eng, aes(x=population/1e6, y=value, label=year)) +
   scale_colour_manual(values=c("darkgray", "black")) 
 
 
-pdf('imgs/english_top3.pdf', width = 5, height=4)
-p_eng
-dev.off()
-
-
 save(p_eng, file='Data/top_3_english.RData')
 #############

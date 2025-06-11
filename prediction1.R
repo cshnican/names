@@ -105,7 +105,7 @@ sum.d = tibble(region = c("Korea (2015 Census)", "Vietnamese-American (2010 Cens
                              5,
                              5),
               
-              `population` = c(51069000, # Statistics Korea, Korean Census 2015, https://kostat.go.kr/board.es?mid=a20107020000&bid=11739&tag=&act=view&list_no=420178&ref_bid=&keyField=&keyWord=&nPage=1
+              `population` = c(51069000, # Statistics Korea, Korean Census 2015, https://kostat.go.kr/board.es?mid=a20107020000&bid=11739&tag=&act=view&list_no=420179&ref_bid=&keyField=&keyWord=&nPage=1
                                1548449, # US Census Bureau, Vietnamese American population 2010, https://www.census.gov/content/dam/Census/library/publications/2012/dec/c2010br-11.pdf
                                23572049, # Taiwan Dept of Household Registration, January 2018, https://www.ris.gov.tw/app/portal/346 
                                sum(beith$X4, na.rm=T), # since the cut-off is 1, the sample size is the true population
@@ -145,60 +145,7 @@ d = tibble(`Korea (2015 Census)`=krank[1:range], `Vietnamese-American (2010 Cens
            `Finland pre-1800` = fins_pre1800$name_count[1:range])
 
 
-###################################################
-# SI plot pairwise
-
-d$`Scottish (1700-1800)` = rowSums(d[, c("Dingwall (1700-1800)", "Govan (1700-1800)", "Beith (1700-1800)", "Earlstone (1700-1800)")], na.rm = TRUE)
-ggplot(d, aes(x=`Korea (2015 Census)`, y=`Vietnamese-American (2010 Census)`)) + geom_point() + 
-  theme_classic(12) + 
-  geom_smooth(method=lm, se=F) + scale_x_log10() + scale_y_log10()
-
-d.g = d %>%
-  gather(variable, value) %>%
-  filter(variable %in% c("Northern England (1701-1800)",
-                            "Scottish (1700-1800)",
-                            "Korea (2015 Census)",
-                            "Vietnamese-American (2010 Census)",
-                            "Taiwan (2018 Census)",
-                            "California (1910-2010)"
-                         )) %>%
-  distinct() %>% filter(value != 0) %>%
-  group_by(variable) %>%
-  mutate(r= rank(-value)) 
-d.g2 = rename(d.g, variable2 = variable, value2=value)
-d.g3 = left_join(d.g, d.g2) 
-d.g3 = mutate(d.g3, value = log10(value),
-               value2=log10(value2))
-
-for (i in unique(d.g3$variable)) {
-p = ggplot(filter(d.g3, variable == i,
-              variable2 != i, r != 1), aes(x=value, y=value2)) + geom_point() + 
-  theme_bw(12) + 
-  facet_grid(variable ~ variable2) + #, scales = "free")  +
-  xlab("Log frequency") + ylab("Log frequency")
-pdf(paste0("imgs/pairwise_", i, ".pdf"), width=6, height=3)
-print(p)
-dev.off()
-# ggsave(paste0("imgs/", i, ".png"), width=6, height=3)
-}
-
-
-d.g = d %>%
-  gather(variable, value) %>%
-  filter(variable %in% c("Beith (1700-1800)",
-                         "Dingwall (1700-1800)",
-                         "Earlstone (1700-1800)",
-                         "Govan (1700-1800)")) %>%
-  group_by(variable) %>%
-  mutate(r= rank(-value)) 
-d.g2 = rename(d.g, variable2 = variable, value2=value)
-d.g3 = left_join(d.g, d.g2) 
-d.g3 = mutate(d.g3, value = log10(value),
-              value2=log10(value2))
-
-###################################################
-
-
+# ====================
 d.sum = gather(d, Locale, value) %>%
   filter(value!=0) %>%
   group_by(Locale) %>%
@@ -233,11 +180,6 @@ ag2 = ggplot(d.sum %>%
                                  "Finland pre-1800" = "gray",
                                  "California (1910-2010)" = "red",
                                  "Delaware (1910-2010)" = "pink"))
-
-pdf('imgs/proportion_relative_to_top.pdf', width=10, height=6)
-ag2
-dev.off()
-
 
 
 save(ag2, file='Data/fig_proportion_relative_to_top.RData')
