@@ -7,8 +7,51 @@ library(xtable)
 library(lmerTest)
 library(brms)
 library(ggpubr)
+library(spearmanCI)
 library(ggplot2)
 library(psych)
+
+
+### helper function adapted from de Carvalho and Marques (2012)
+spearmanCI2 <- function(x, y, level = 0.95, method = "Euclidean", plot = FALSE) {
+  nx <- length(x)
+  ny <- length(y)
+  if (!is.vector(x) | !is.vector(y) | nx != ny)
+    stop("x and y must be vectors of the same length")
+  if (any(is.na(x)) | any(is.na(y)))
+    stop("missing values are not allowed")
+  if (method == "Euclidean") 
+    m <- 0
+  else if (method == "empirical") 
+    m <- 1
+  else stop('method must be "Euclidean" or "empirical"')
+  
+  U <- cor(x, y, method = "spearman")
+  n <- nx
+  Z <- as.double()
+  for (i in seq_len(n)) Z[i] <- n * U - (n - 1) * cor(x[-i], y[-i], method = "spearman")
+  
+  if (method == "Euclidean") {
+    s <- function(theta) 1/n * sum((Z - theta)^2)
+    g <- function(theta) n * (U - theta)^2/s(theta) - qchisq(level, 1)
+    l <- uniroot(g, interval = c(-1, U), tol = 1e-11)$root
+    u <- uniroot(g, interval = c(U, 1), tol = 1e-11)$root
+  } else if (method == "empirical") {
+    pelr <- function(theta) prod(el.test(Z, theta)$wts)
+    l <- uniroot(function(theta) pelr(theta) - exp(-qchisq(level, 1)/2),
+                 interval = c(min(Z), mean(Z)), tol = 1e-11)$root
+    u <- uniroot(function(theta) pelr(theta) - exp(-qchisq(level, 1)/2),
+                 interval = c(mean(Z), max(Z)), tol = 1e-11)$root
+  }
+  
+  list(
+    estimate = U,
+    conf.int = c(lower = l, upper = u),
+    level = level,
+    method = method
+  )
+}
+
 
 d = read_csv("data/finnish_data_selected.csv")
 
@@ -197,19 +240,25 @@ summary(lm(first.last$scale.pat ~  first.last$scale.first.ent))
   
 
 #Table 3 (reformatted)
+
+# formula to estimate CIs for Spearman correlation:
+# tanh(atanh(r) + 1.96/sqrt(n-3))
 dplyr::select(first.last, scale.pat, lon, scale.first.ent, birth_year_cut) %>%
   na.omit() %>%
   group_by(birth_year_cut) %>%
   summarize(`Corr: Patronyms:FirstNameEnt`=cor(scale.pat, scale.first.ent, method="spearman"),
             `p: Patronyms:FirstNameEnt` = cor.test(scale.pat, scale.first.ent, method="spearman", exact=FALSE)$p.value,
+            `CI_lower: Patronyms:FirstNameEnt` = spearmanCI2(scale.pat, scale.first.ent)$conf.int[1],
+            `CI_upper: Patronyms:FirstNameEnt` = spearmanCI2(scale.pat, scale.first.ent)$conf.int[2],
             `Corr: Patronyms:Longitude` = cor(scale.pat, lon, method="spearman"),
             `p: Patronyms:Longitude` = cor.test(scale.pat, lon, method="spearman", exact=FALSE)$p.value,
+            `CI_lower: Patronyms:Longitude` = spearmanCI2(scale.pat, lon)$conf.int[1],
+            `CI_upper: Patronyms:Longitude` = spearmanCI2(scale.pat, lon)$conf.int[2],
             `Corr: FirstNameEnt:Longitude` = cor(scale.first.ent, lon, method="spearman"),
-            `p: FirstNameEnt:Longitude` = cor.test(scale.first.ent, lon, method="spearman", exact=FALSE)$p.value
-            ) %>%
-  xtable()
-
-
+            `p: FirstNameEnt:Longitude` = cor.test(scale.first.ent, lon, method="spearman", exact=FALSE)$p.value,
+            `CI_lower: FirstNameEnt:Longitude` = spearmanCI2(scale.first.ent, lon)$conf.int[1],
+            `CI_upper: FirstNameEnt:Longitude` = spearmanCI2(scale.first.ent, lon)$conf.int[2],
+            ) 
 
 dplyr::select(first.last, scale.pat, lon, birth_year_cut) %>%
   na.omit() %>%

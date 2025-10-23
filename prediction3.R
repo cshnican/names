@@ -68,7 +68,7 @@ d.dupe = group_by(d, country) %>%
          variable = gsub("\n", "", variable))
 
 # for illustrations
-dupe.helper = read_csv("data/plot_dupes_helper.csv")
+dupe.helper = read_csv("data/plot_dupes_helper.csv")plot
 #d.dupe$variable = gsub("\n", "", d.dupe$variable)
 d.dupe.helper = left_join(dupe.helper, d.dupe) %>%
   mutate(IsClear = value < 30,

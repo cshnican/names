@@ -6,14 +6,13 @@ Michael Ramscar, Sihan Chen, Richard Futrell, Kyle Mahowald
 <img src="imgs/proportion_relative_to_top.png" alt="Figure 2A" width="600"/>
 
 
-
 This Github repository contains the data, the analysis script, and the figures in the paper.
 
 ## A description of the repository content
 Note: as mentioned in the paper, we call the element in a personal that goes first *prefix-name* and the element that goes second *byname*. For example, in the name *John Smith*, *John* is the prefix-name and *Smith* is the byname. In the name *Li Xiaoping*, *Li* is the prefix-name and *Xiaoping* is the byname.
 
 ### Scripts
-To reproduce all the main figures, download `finnish_data_selected.csv` from [here](https://drive.google.com/file/d/12peW30OdjllRnHIp3N5-hMDXJlEn59G8/view?usp=sharing), put the file inside the `Data` folder. Run `prediction1.R`, `top3_english.R`, `prediction2.R`, `prediction3.R` first, and then run `plot_merged_figs.R`. 
+To reproduce all the main figures, request `finnish_data_selected.csv` by contacting the corresponding author, put the file inside the `Data` folder. Run `prediction1.R`, `top3_english.R`, `prediction2.R`, `prediction3.R` first, and then run `plot_merged_figs.R`. 
 
 A description of the scripts:
 - `prediction1.R`: code for the first analysis and Figure 2a
@@ -44,7 +43,6 @@ The scientist name data is not available due to data privacy concerns but can be
 #### Taiwanese
 - `Chinese_name_data`: a folder containing the raw files related to Chinese names
     - `taiwan_2018.csv`: a list of 500 most common Taiwanese prefix-names. The data is manually extracted from the 2018 population census conducted by the Taiwanese Ministry of Interior ([link](https://www.ris.gov.tw/documents/data/5/2/107namestat.pdf). See Table 57, pp.282-304). The Taiwanese government allows their published data to be freely used for noncommercial purposes ([see the statement here](https://data.gov.tw/license)).
-    - `taiwan_givenname.csv`; a list of 100 most common Taiwanese men bynames and 100 most common Taiwanese women bynames. The data is manually extracted from the 2018 population census conducted by the Taiwanese Ministry of Interior ([link](https://www.ris.gov.tw/documents/data/5/2/107namestat.pdf). See Table 51, pp.264-265). The Taiwanese government allows their published data to be freely used for noncommercial purposes ([see the statement here](https://data.gov.tw/license)).
 
 #### Korean
 - `Korea`: a folder containing the raw files related to Korean names
@@ -70,11 +68,11 @@ This data is contained as an appendix of Crook's MPhil Thesis work [Crook, Alice
 - `Vietnam (US 2010)`: containing the file `vietnamese_american_data.csv`, a subset of Vietnamese-American bynames pulled from the US 2010 Census
 
 #### Finnish
-- `finnish_data_selected.csv`: Finnish birth records from 1700 to 1917. This data was made available by Eric Malmi and was built for Malmi et al. (2018) off the HisKi Finnish genealogical data set. This data set was gathered and cleaned, as described in Malmi et al. (2018). [link to Malmi et al., (2018)](https://arxiv.org/abs/1802.06055). We focused in particular on birth name data and for all names used standardized spellings as in Malmi et al. (2018). According to Malmi (private communication), permission was given to Malmi and other researchers to use the HisKi dataset. There are other papers that use the HisKi database (e.g. [this](https://read.dukeupress.edu/demography/article/57/3/1171/168022)) or Malmi's database (e.g. [this](https://users.cecs.anu.edu.au/~Peter.Christen/publications/kirielle2019geocoding.pdf)). 
+- `finnish_data_selected.csv` (a preprocessed dataset can be made available by request): Finnish birth records from 1700 to 1917. This data was made available by Eric Malmi and was built for Malmi et al. (2018) off the HisKi Finnish genealogical data set. This data set was gathered and cleaned, as described in Malmi et al. (2018). [link to Malmi et al., (2018)](https://arxiv.org/abs/1802.06055). We focused in particular on birth name data and for all names used standardized spellings as in Malmi et al. (2018). According to Malmi (private communication), permission was given to Malmi and other researchers to use the HisKi dataset. There are other papers that use the HisKi database (e.g. [this](https://read.dukeupress.edu/demography/article/57/3/1171/168022)) or Malmi's database (e.g. [this](https://users.cecs.anu.edu.au/~Peter.Christen/publications/kirielle2019geocoding.pdf)).
 
 
 #### Scientist names
-- `downsampled_scinames.csv` (not available): a list of 2550 scientist names from the national academy of 6 countries (we sampled 425 names from each). As indicated below, we sourced American, Chinese, and French scientist names from Wikipedia, which is available for reuse under a CC-BY-SA license. The Finnish scientist names are considered by us as public information under the privacy policy of the Finnish Academy of Science and Letters, since members have the rights to prohibit access to their information (see the original statement in Finnish [here](https://acadsci.fi/tiedostot/rekisteriseloste_jasenet.pdf), at "6. Säännönmukaiset tietolähteet".), and further correspondence with the academy confirmed this. However, we did not find explicit licensing information on the website of the Korean Academic of Sciences or on the website of the Russian Academy of Sciences. We emailed both instututions but did not receive a response. Because of this, we decided to not make this dataset publicly available. However, it can be provided upon request.
+- `downsampled_scinames.csv` (available via request): a list of 2550 scientist names from the national academy of 6 countries (we sampled 425 names from each). As indicated below, we sourced American, Chinese, and French scientist names from Wikipedia, which is available for reuse under a CC-BY-SA license. The Finnish scientist names are considered by us as public information under the privacy policy of the Finnish Academy of Science and Letters, since members have the rights to prohibit access to their information (see the original statement in Finnish [here](https://acadsci.fi/tiedostot/rekisteriseloste_jasenet.pdf), at "6. Säännönmukaiset tietolähteet".), and further correspondence with the academy confirmed this. However, we did not find explicit licensing information on the website of the Korean Academic of Sciences or on the website of the Russian Academy of Sciences. We emailed both instututions but did not receive a response. Because of this, we decided to not make this dataset publicly available. However, it can be provided upon request.
     - 425 names from the National Academy of Sciences (USA) [link](https://en.wikipedia.org/wiki/List_of_members_of_the_National_Academy_of_Sciences)
     - 425 names from the Chinese Academy of Sciences [link](https://en.wikipedia.org/wiki/List_of_members_of_the_Chinese_Academy_of_Sciences)
     - 425 names from the French Academy of Sciences [link](https://en.wikipedia.org/wiki/Category:Members_of_the_French_Academy_of_Sciences)
