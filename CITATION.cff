@@ -1,9 +1,15 @@
-@misc{Ramscar2025crosscultural,
-  author = {Ramscar, M. and Chen, S. and Futrell, R. and Mahowald, K.},
-  title = {Cross-cultural structures of personal name systems reflect general communicative principles},
-  year = {2025},
-  publisher = {GitHub},
-  journal = {GitHub repository},
-  howpublished = {\url{https://github.com/cshnican/names}},
-  commit = {297e5f6e3d84ad1de16ef41612a139d7ccb83b58},
-}
+cff-version: 1.1.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: Ramscar
+  given-names: Michael
+- family-names: Chen
+  given-names: Sihan
+- family-names: Futrell
+  given-names: Richard
+- family-names: Mahowald
+  given-names: Kyle
+title: Cross-cultural structures of personal name systems reflect general communicative principles
+version: v1.5
+date-released: 2025-11-10
+                              
