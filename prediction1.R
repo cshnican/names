@@ -59,7 +59,7 @@ all_us_1910_2010 <- lapply(us_states, read_files) %>% bind_rows() %>%
 # summary data
 sum.d = tibble(region = c("Korea (2015 Census)", "Vietnamese-American (2010 Census)", 
                           "Taiwan (2018 Census)",
-                          "Beith (1700-1800)", "Govan (1700-1800)", "Dingwall (1700-1800)", "Earlstone (1700-1800)",
+                          "Beith (1700-1800)", "Govan (1700-1800)", "Dingwall (1700-1800)", "Earlston (1700-1800)",
                           "Northern England (1701-1800)",
                           "Finland pre-1800", "Finland post-1900",
                           "Delaware (1910-2010)", "California (1910-2010)", "All USA (1910-2010)"),
@@ -125,9 +125,9 @@ sum.d = tibble(region = c("Korea (2015 Census)", "Vietnamese-American (2010 Cens
 sum.d <- sum.d %>%
   rbind(tibble(
     region = 'Scottish (1700-1800)',
-    `name count` = sum(sum.d$`name count`[sum.d$region %in% c('Dingwall (1700-1800)', 'Earlstone (1700-1800)', 'Govan (1700-1800)', 'Beith (1700-1800)')]),
-    `sample` = sum(sum.d$`sample`[sum.d$region %in% c('Dingwall (1700-1800)', 'Earlstone (1700-1800)', 'Govan (1700-1800)', 'Beith (1700-1800)')]),
-    `population` = sum(sum.d$`population`[sum.d$region %in% c('Dingwall (1700-1800)', 'Earlstone (1700-1800)', 'Govan (1700-1800)', 'Beith (1700-1800)')]),
+    `name count` = sum(sum.d$`name count`[sum.d$region %in% c('Dingwall (1700-1800)', 'Earlston (1700-1800)', 'Govan (1700-1800)', 'Beith (1700-1800)')]),
+    `sample` = sum(sum.d$`sample`[sum.d$region %in% c('Dingwall (1700-1800)', 'Earlston (1700-1800)', 'Govan (1700-1800)', 'Beith (1700-1800)')]),
+    `population` = sum(sum.d$`population`[sum.d$region %in% c('Dingwall (1700-1800)', 'Earlston (1700-1800)', 'Govan (1700-1800)', 'Beith (1700-1800)')]),
     `cut-offs` = 1
   ))  
 
@@ -137,7 +137,7 @@ range=nrow(all_us_1910_2010)
 d = tibble(`Korea (2015 Census)`=krank[1:range], `Vietnamese-American (2010 Census)`=vietrank[1:range],
            `Taiwan (2018 Census)`=taiwan$Number[1:range],
            `Beith (1700-1800)`=beith$X4[1:range], `Dingwall (1700-1800)`=dingwall$X4[1:range], 
-           `Govan (1700-1800)`=govan$X4[1:range], `Earlstone (1700-1800)`=earlstone$X4[1:range],
+           `Govan (1700-1800)`=govan$X4[1:range], `Earlston (1700-1800)`=earlstone$X4[1:range],
            `California (1910-2010)`=ca$n[1:range], `Delaware (1910-2010)`= de$n[1:range],
            `All USA (1910-2010)` = all_us_1910_2010$freq[1:range] %>% sort() %>% rev(),
            `Northern England (1701-1800)` = nengland$X2[1:range],
@@ -160,7 +160,7 @@ ag2 = ggplot(d.sum %>%
                                  levels = c("California (1910-2010)", "Delaware (1910-2010)", 
                                             "Vietnamese-American (2010 Census)", "Korea (2015 Census)",
                                             "Taiwan (2018 Census)",
-                                            "Earlstone (1700-1800)", "Govan (1700-1800)", "Dingwall (1700-1800)", "Beith (1700-1800)",
+                                            "Earlston (1700-1800)", "Govan (1700-1800)", "Dingwall (1700-1800)", "Beith (1700-1800)",
                                             "Northern England (1701-1800)",
                                             "Finland pre-1800", "Finland post-1900"))
                ), 
@@ -173,7 +173,7 @@ ag2 = ggplot(d.sum %>%
   scale_y_log10() +
   scale_colour_manual(values = c("Vietnamese-American (2010 Census)" =  "#003566", "Korea (2015 Census)" = "#4CC9F0",
                                  "Taiwan (2018 Census)" = "#96E072",
-                                 "Earlstone (1700-1800)" = "orange", "Govan (1700-1800)" = "darkorange",
+                                 "Earlston (1700-1800)" = "orange", "Govan (1700-1800)" = "darkorange",
                                  "Dingwall (1700-1800)" = "sienna", "Beith (1700-1800)" = "#BF360C",
                                  "Northern England (1701-1800)" = "#B45F06",
                                  "Finland post-1900" = "darkgray",

@@ -1,6 +1,7 @@
 library(tidyverse)
 library(ggrepel)
 library(gridExtra)
+library(ggpubr)
 library(xtable)
 library(stringdist)
 
@@ -68,7 +69,7 @@ d.dupe = group_by(d, country) %>%
          variable = gsub("\n", "", variable))
 
 # for illustrations
-dupe.helper = read_csv("data/plot_dupes_helper.csv")plot
+dupe.helper = read_csv("data/plot_dupes_helper.csv")
 #d.dupe$variable = gsub("\n", "", d.dupe$variable)
 d.dupe.helper = left_join(dupe.helper, d.dupe) %>%
   mutate(IsClear = value < 30,
@@ -174,7 +175,7 @@ china.usway = group_by(china, country) %>%
            {stringdist(x, china$given.init.surname)}) <= 1) - 1
   ) %>%
   select(name=given.init.surname, neigh) %>%
-  mutate(mode = "X. Li", #"China (given init. + family name):\nX. Li",
+  mutate(mode = "Zhao Y.", #"China (given init. + family name):\nZhao Y.",
          type = "given init.")
 
 china.chinaway = group_by(china, country) %>%
@@ -183,7 +184,7 @@ china.chinaway = group_by(china, country) %>%
              {stringdist(x, china$given.surname.init)}) <= 1) - 1
     ) %>%
     select(name=given.surname.init, neigh) %>%
-    mutate(mode = "Xiaoping L.", #"China (family init. + given name):\nL. Xiaoping",
+    mutate(mode = "Z. Yufen", #"China (family init. + given name):\n.Z. Yufen",
            type = "inherited init.")
 
 us = filter(d, country == "us")
@@ -193,7 +194,7 @@ us.usway = group_by(us, country) %>%
            {stringdist(x, us$given.init.surname)}) <= 1) - 1
   ) %>%
   select(name=given.init.surname, neigh) %>%
-  mutate(mode = "J. Smith", #"US (given init. + family name):\nJ. Smith",
+  mutate(mode = "N. Kanwisher", #"US (given init. + family name):\nN. Kanwisher",
          type = "given init.")
 
 us.chinaway = group_by(us, country) %>%
@@ -202,7 +203,7 @@ us.chinaway = group_by(us, country) %>%
            {stringdist(x, us$given.surname.init)}) <= 1) - 1
   ) %>%
   select(name=given.surname.init, neigh) %>%
-  mutate(mode = "Jamal S.", #"US (given name + family init.):\nJamal S.",
+  mutate(mode = "Nancy K.", #"US (given name + family init.):\nNancy K.",
          type = "inherited init.")
 
 korea = filter(d, country == "korea")
@@ -212,7 +213,7 @@ korea.usway = group_by(korea, country) %>%
            {stringdist(x, korea$given.init.surname)}) <= 1) - 1
   ) %>%
   select(name=given.init.surname, neigh) %>%
-  mutate(mode = "S. Kim", #"Korea (given init. + family name):\nS. Kim",
+  mutate(mode = "Lee H.", #"Korea (given init. + family name):\nLee H.",
          type = "given init.")
 
 korea.chinaway = group_by(korea, country) %>%
@@ -221,7 +222,7 @@ korea.chinaway = group_by(korea, country) %>%
            {stringdist(x, korea$given.surname.init)}) <= 1) - 1
   ) %>%
   select(name=given.surname.init, neigh) %>%
-  mutate(mode = "Sang Yong K.", #"Korea (family init. + given name):\nK. Sang Yong",
+  mutate(mode = "L. Hyun Jae", #"Korea (family init. + given name):\nL. Hyun Jae",
          type = "inherited init.")
 
 korea_2 = filter(d, country == 'korea-2')
@@ -231,7 +232,7 @@ korea_2.usway = group_by(korea_2, country) %>%
            {stringdist(x, korea_2$given.init.surname)}) <= 1) - 1
   ) %>%
   select(name=given.init.surname, neigh) %>%
-  mutate(mode = "S. Y. Kim", #"Korea (given init. + family name):\nS. Kim",
+  mutate(mode = "Lee H. J.", #"Korea (given init. + family name):\nLee H.",
          type = "given init.")
 
 korea_2.chinaway = group_by(korea_2, country) %>%
@@ -240,7 +241,7 @@ korea_2.chinaway = group_by(korea_2, country) %>%
            {stringdist(x, korea_2$given.surname.init)}) <= 1) - 1
   ) %>%
   select(name=given.surname.init, neigh) %>%
-  mutate(mode = "Sang Yong K.", #"Korea (family init. + given name):\nK. Sang Yong",
+  mutate(mode = "L. Hyun Jae", #"Korea (family init. + given name):\nL. Hyun Jae",
          type = "inherited init.")
 
 france = filter(d, country == "france")
@@ -307,7 +308,7 @@ finnish.usway = group_by(finnish, country) %>%
            {stringdist(x, finnish$given.init.surname)}) <= 1) - 1
   ) %>%
   select(name=given.init.surname, neigh) %>%
-  mutate(mode = "E. Saarinen", #"Finland (given init. + family):\nE. Saarinen",
+  mutate(mode = "J. Tuomilehto", #"Finland (given init. + family):\nE. Saarinen",
          type = "given init.")
 
 finnish.chinaway = group_by(finnish, country) %>%
@@ -316,7 +317,7 @@ finnish.chinaway = group_by(finnish, country) %>%
            {stringdist(x, finnish$given.surname.init)}) <= 1) - 1
   ) %>%
   select(name=given.surname.init, neigh) %>%
-  mutate(mode = "Eero S.", #"Finland (given + family init.):\nEero S.",
+  mutate(mode = "Jaakko T.", #"Finland (given + family init.):\nEero S.",
          type = "inherited init.")
 
 
@@ -335,8 +336,8 @@ neighs$type.pretty = ifelse(neighs$type == "flexible given init.", "flexible giv
 neighbors.per.1000 = group_by(neighs, country, mode, type) %>%
   summarise(mean.neighbors.per.1000 = 1000 * mean(neigh)/n()) %>%
   mutate(mode = factor(mode, levels = c(
-    "X. Li", "Xiaoping L.", "E. Saarinen", "Eero S.", "M. Curie", "Marie C.", "S. Kim", "S. Y. Kim", "Sang Yong K.", "A. Kolmogorov","A. N. Kolmogorov", "Andrey Nikolaevich K.", "Andrey K.",
-    "J. Smith", "Jamal S.")),
+    "Zhao Y.", "Z. Yufen", "J. Tuomilehto", "Jaakko T.", "M. Curie", "Marie C.", "Lee H.", "Lee H. J.", "L. Hyun Jae", "A. Kolmogorov","A. N. Kolmogorov", "Andrey Nikolaevich K.", "Andrey K.",
+    "N. Kanwisher", "Nancy K.")),
   country = ifelse(country == 'us', 'US', str_to_title(country))
   )
 
@@ -370,9 +371,11 @@ t.test(neighs$neigh[neighs$country %in% c('china', 'korea', 'korea-2') &
        neighs$neigh[neighs$country %in% c('finland', 'france', 'us', 'russia', 'russia-2') &
                       neighs$type == 'inherited init.'], var.equal = FALSE)$p.value
 
-p3 <- ggplot(neighs %>% mutate(mode = factor(mode, levels = c(
-  "X. Li", "Xiaoping L.", "E. Saarinen", "Eero S.", "M. Curie", "Marie C.", "S. Kim", "S. Y. Kim", "Sang Yong K.", "A. Kolmogorov","A. N. Kolmogorov", "Andrey Nikolaevich K.", "Andrey K.",
-  "J. Smith", "Jamal S.")),
+p3 <- ggplot(neighs %>% mutate(
+  mode = factor(mode, levels = c(
+  "Zhao Y.", "Z. Yufen", "J. Tuomilehto", "Jaakko T.", "M. Curie", "Marie C.", "Lee H.", "Lee H. J.", "L. Hyun Jae", "A. Kolmogorov","A. N. Kolmogorov", "Andrey Nikolaevich K.", "Andrey K.",
+  "N. Kanwisher", "Nancy K.")
+  ),
   country = ifelse(country == 'us', 'US', str_to_title(country))
 ), aes(x=mode, y=neigh/425*1000, alpha = as.factor(type))) +
   stat_summary(geom='col', fun='mean', alpha=0.8) +
