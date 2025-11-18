@@ -358,6 +358,11 @@ t.test(neighs$neigh[neighs$country %in% c('china', 'korea', 'korea-2') &
 t.test(neighs$neigh[neighs$country %in% c('china', 'korea', 'korea-2') &
                       neighs$type == 'given init.'], 
        neighs$neigh[neighs$country %in% c('finland', 'france', 'us', 'russia', 'russia-2') &
+                      neighs$type == 'given init.'], var.equal = FALSE)$conf.int
+
+t.test(neighs$neigh[neighs$country %in% c('china', 'korea', 'korea-2') &
+                      neighs$type == 'given init.'], 
+       neighs$neigh[neighs$country %in% c('finland', 'france', 'us', 'russia', 'russia-2') &
                       neighs$type == 'given init.'], var.equal = FALSE)$p.value
 
 # inherited init
@@ -365,6 +370,11 @@ t.test(neighs$neigh[neighs$country %in% c('china', 'korea', 'korea-2') &
                       neighs$type == 'inherited init.'], 
        neighs$neigh[neighs$country %in% c('finland', 'france', 'us', 'russia', 'russia-2') &
                       neighs$type == 'inherited init.'], var.equal = FALSE)$statistic
+
+t.test(neighs$neigh[neighs$country %in% c('china', 'korea', 'korea-2') &
+                      neighs$type == 'inherited init.'], 
+       neighs$neigh[neighs$country %in% c('finland', 'france', 'us', 'russia', 'russia-2') &
+                      neighs$type == 'inherited init.'], var.equal = FALSE)$conf.int
 
 t.test(neighs$neigh[neighs$country %in% c('china', 'korea', 'korea-2') &
                       neighs$type == 'inherited init.'], 

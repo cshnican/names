@@ -106,30 +106,8 @@ l.par.noint = lmer(mean.hasLast ~ lon + birth_year_cut_num + (1 + birth_year_cut
                    data=has.last.parishes)
 
 summary(l.par)
+confint(l.par)
 anova(l.par, l.par.noint)
-
-# calculate gradients: 
-has.last.parishes %>%
-  ggplot(aes(x=lon, y=mean.hasLast)) +
-  facet_wrap(~birth_year_cut) +
-  stat_cor(aes(label = paste(after_stat(r.label), after_stat(p.label), sep = "~`,`~")), 
-           label.x=20, label.y=1.5, size=3, p.accuracy = 0.001) +
-  geom_smooth(method='lm') +
-  geom_point()
-
-
-has.last.parishes %>% 
-  ggplot(aes(x=lat, y=mean.hasLast)) +
-  facet_wrap(~birth_year_cut) +
-  stat_cor(aes(label = paste(after_stat(r.label), after_stat(p.label), sep = "~`,`~")), 
-           label.x=60, label.y=1.5, size=3, p.accuracy = 0.001) +
-  geom_smooth(method='lm') +
-  geom_point()
-
-
-
-summary(lm(data=has.last.parishes, mean.hasLast ~ lon))
-
 
 
 p2 = ggplot(has.last.parishes %>%
@@ -202,9 +180,6 @@ p1 = ggplot(first.ent.early, aes(x=lon, y=lat, colour=first.ent)) +
 p1
 
 
-summary(lm(data=first.ent.early, first.ent ~ lon))
-summary(lm(data=first.ent.early, first.ent ~ lat))
-
 set.seed(42)
 first.ent.early$birthyearnum = as.numeric(as.factor(first.ent.early$birth_year_cut))
 l = lmer(data=first.ent.early, 
@@ -215,28 +190,16 @@ l0 = lmer(data=first.ent.early,
           REML=F)
 anova(l, l0)
 summary(l)
+confint(l)
 
 pdf('imgs/figure3.pdf', width=7, height=8)
 ggarrange(p2, p1, ncol=1, labels=c('a)', 'b)'))
 dev.off()
 
-
 # compare parishes lat name pct with first name ent
 first.last = left_join(has.last.parishes, first.ent.early)
 first.last$scale.first.ent = scale(first.last$first.ent)[, 1]
 first.last$scale.pat = scale(first.last$`Proportion with hereditary patronym`)[, 1]
-
-ggplot(first.last, aes(x=`scale.pat`, y=scale.first.ent)) +
-  geom_point() + 
-  geom_smooth(method=lm) +
-  stat_cor(aes(label = paste(after_stat(r.label), after_stat(p.label), sep = "~`,`~")),
-          label.x=-1.5, label.y=3, size=3, p.accuracy = 0.001) +
-  theme_classic(18) +
-  xlab('normalized percentage of byname') +
-  ylab('normalized prefix-name entropy')
-
-summary(lm(first.last$scale.pat ~  first.last$scale.first.ent))
-
   
 
 #Table 3 (reformatted)
