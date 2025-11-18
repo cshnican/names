@@ -3,3 +3,5 @@ Data/finnish_data_selected.csv
 Data/downsampled_scinames.csv
 .DS_STORE
 .DS_Store
+.RData
+.Rhistory
